@@ -1,12 +1,18 @@
 # Lecture 006 - Create npm Project and install Playwright dependencies
+## 1. create a Project folder
+## 2. Open terminal in project folder path
+## 3. run first and second commands:
 ```javascript
 $ npm init -y
 $ npm init playwright@latest
-$ javascript
-$ tests
+```
+## 4. select
+```javascript
+- javascript
+- tests
 ```
 
-Test runner:
+## 5. Test runner:
 ```javascript
 Playwright-Project
  ├-- ...
@@ -14,7 +20,7 @@ Playwright-Project
 ```
 
 
-Main folder/Working folder/ Test folder:
+## 6. Main folder/Working folder/ Test folder: (step 4)
 
 ```javascript
 PlaywrightProject
@@ -23,7 +29,7 @@ PlaywrightProject
 ```
 
 
-Examples:
+## 7. Some Examples
 
 ```javascript
 const { test, expect } = require('@playwright/test');
@@ -441,3 +447,274 @@ await page.locator('.card-body a').nth(0).textContent();
 await page.locator('.card-body a').nth(1).textContent();
 await page.locator('.card-body a').nth(2).textContent();
 ```
+
+# Lecture 014 - Understanding how wait mechanism works if list of elements are returned
+
+1. First, getting text from elements with same locator using `.allTextContents()`
+```javascript
+//many elements same locator
+const cardTitle = page.locator(".card-body a");
+...
+const allTitles = await cardTitle.allTextContents();
+```
+
+2. Assessment of `.allTextContents()` without previous searching:
+```javascript
+test("Assessment of .allTextContents() - no previous searching", async ( {page} ) => {
+    await page.goto("https://rahulshettyacademy.com/loginpagePractise/"); 
+
+    //variables: without await
+    const username = page.locator('#username');
+    const password = page.locator('[type="password"]');
+    const signInBtn = page.locator('#signInBtn');
+    const cardTitle = page.locator(".card-body a");
+
+    //actions
+    await username.fill('rahulshettyacademy');
+    await password.fill('learning');
+    await signInBtn.click();
+    
+    // no searching done!
+    
+    const allTitles = await cardTitle.allTextContents(); 
+    console.log("allTitles", allTitles)
+    console.log("allTitles.length: ", allTitles.length)
+    
+});
+```
+  2.1 results:
+  <img src="./Images/Section03/allTextContents() result - no previous search.png" alt="no previous search - allTextContents()">
+
+3. Assessment of `.allTextContents()` with previous searching:
+```javascript
+test("Assessment of .allTextContents() - with previous searching", async ( {page} ) => {
+    await page.goto("https://rahulshettyacademy.com/loginpagePractise/"); 
+
+    //variables: without await
+    const username = page.locator('#username');
+    const password = page.locator('[type="password"]');
+    const signInBtn = page.locator('#signInBtn');
+    const cardTitle = page.locator(".card-body a");
+
+    //actions
+    await username.fill('rahulshettyacademy');
+    await password.fill('learning');
+    await signInBtn.click();
+    
+    // previous searching: 👈🏽 👈🏽 👈🏽 👈🏽
+    console.log(await cardTitle.first().textContent());
+    console.log(await cardTitle.nth(0).textContent());
+    console.log(await cardTitle.nth(1).textContent());
+    
+    // to wrap all titles
+    const allTitles = await cardTitle.allTextContents(); 
+    console.log("allTitles", allTitles)
+    console.log("allTitles.length: ", allTitles.length)
+});
+```
+
+  3.1 Result:
+  <img src="./Images/Section03/allTextContents() - previous search.png" alt="">
+
+Note:
+- `.textContent()` is attached to DOM element.
+- `.allTextContents()` is not attahced to DOM element.  
+
+
+# Lecture 014 - Techniques to wait dynamically for new page in Service based applications
+
+## 1. Having this known issue with `.allTextContents()`, let's do a backend searching:
+### 1.1 Known Issue:
+```js
+test('Using .waitForLoadState("networkidle")', async ({page}) => {
+    await page.goto("https://rahulshettyacademy.com/client/")
+
+    //locators:
+    await page.locator("#userEmail").fill("anshika@gmail.com");
+    await page.locator("#userPassword").fill("Iamking@000");
+    await page.locator("[value='Login']").click();
+ 
+    //...
+
+    const titles = await page.locator(".card-body b").allTextContents();
+    console.log("All Titles on page: ", titles);
+
+    await page.waitForTimeout(2000);
+});
+```
+
+Result: 
+<img src="./Images/Section03/no using .waitForLoadState(&apos;networkidle&apos;).png" alt="">
+
+### 1.2. Fixing this known issue using `.waitForLoadState("networkidle")` right before the `.allTextContents()` method is called:
+```javascript
+...
+//wait mechanism: await page.waitForLoadState("networkidle");
+await page.waitForLoadState("networkidle");
+const titles = await page.locator(".card-body b").allTextContents();
+```
+This method wait until all backend calls are ready.
+<img src="./Images/Section03/backend call - .waitForLoadState(&apos;networkidle&apos;).png" alt="Backend calls">
+
+### 1.3 Currently `.waitForLoadState('networkidle')` shows flakiness, new fixing using `.waitFor()`:
+Deleting `page.waitForLoadState("networkidle")` and replace for `page.locator("locator").waitFor()`
+```js
+  //await page.waitForLoadState("networkidle"); // ←←←←← flakiness
+    await page.locator(".card-body b").first().waitFor();
+```
+and whole test should be as follow:
+```js
+test('Using .waitFor() due to .waitForLoadState() flakiness', async ({page}) => {
+    await page.goto("https://rahulshettyacademy.com/client/")
+
+    //locators:
+    await page.locator("#userEmail").fill("anshika@gmail.com");
+    await page.locator("#userPassword").fill("Iamking@000");
+    await page.locator("[value='Login']").click();
+    
+    //await page.waitForLoadState("networkidle"); // ← flakiness
+    await page.locator(".card-body b").first().waitFor();
+    const titles = await page.locator(".card-body b").allTextContents();
+
+    console.log("All Titles on page: ", titles);
+    await page.waitForTimeout(2000);
+});
+```
+
+> more info related to `page.waitForLoadState('networkidle')` [here!](https://playwright.dev/docs/api/class-page#page-wait-for-load-state)
+### Run a specific file from terminal
+```js
+$ npx playwright test tests/<File_path>.spec.js
+```
+
+
+# Lecture 017 - Handling static `Select` dropdown with Playwright
+
+1. Having this html code:
+```html
+<div class="form-group">
+	<select class="form-control" data-style="btn-info">
+		<option value="stud">Student</option>
+		<option value="teach">Teacher</option>
+		<option value="consult">Consultant</option>
+	</select>
+</div>
+```
+2. declare a locators as follow:
+```js
+const dropdown = page.locator("select.form-control");
+``` 
+3. enter its value using `.selectOption()`:
+```js
+dropdown.selectOption("consult");
+```
+4. `Consultant` option selected.
+```html
+<option value="consult">Consultant</option>
+```
+
+# Lecture 018 - Selecting radio buttons, Checkboxes and implement expect assertions
+
+1. Comparisson table between `.toBeChecked()`and `.isChecked()` 
+
+|    Feature    |    `.toBeChecked()`                       |  `.isChecked()` |
+|---------------|:------------------------------------------:|:---------------:|
+| Type          | Assertion method                           | Locator method |
+| Purpose       | Asserts that a checkbox/radio is checked   | Checks the current state of the elelemt |
+| Returns       | `Throws an error` if the assertion fails     | Returns a boolean (`true`/`false`) |
+| Used in       | Test validation                            | Conditional logic or state verification |
+| Example Usage | `await expect(checkbox).toBeChecked();`    | `const isChecked = await checkbox.isChecked();` |
+2. Simple code:
+```js
+const checkbox = page.locator('#checkbox');
+//more code...
+
+// Check if the checkbox is checked (state check)
+const isChecked = await checkbox.isChecked();
+console.log(`Checkbox is checked: ${isChecked}`);
+
+if (isChecked) {
+  console.log('The checkbox is checked.');
+} else {
+  console.log('The checkbox is not checked.');
+}
+
+// Assert that the checkbox is checked
+await expect(checkbox).toBeChecked();
+```
+
+3. Playwright code:
+```js
+//locator:
+const radioBtns = page.locator(".radiotextsty");
+
+//action
+await page.locator(".radiotextsty").last().click();
+
+//validation:
+console.log("Is  radioBtns.last().isChecked()? ", await radioBtns.last().isChecked()); // true
+
+//Assertion:
+expect(radioBtns.last()).toBeChecked(); // pass
+```
+
+4. Why is `await` before or after `expect`?
+```js
+await expect(checkbox).toBeChecked();  //expect structure => locator
+```
+- `await expect(checkbox).toBeChecked();`: The `await` is outside because `.toBeChecked()` is an assertion method that internally performs asynchronous operations. 
+  - You wait for the entire assertion to complete.
+
+```js
+expect(await checkbox.isChecked()).toBeFalsy(); // expect structure => boolean value
+```
+- `expect(await checkbox.isChecked()).toBeFalsy();`: The `await` is inside because `.isChecked()` is a locator method that returns a promise. 
+  - You wait for the promise to resolve and then pass the result to `expect`.
+
+
+# Lecture 019 - Using async await with Assertions and understand validating the attributes
+
+Having these locators:
+```js
+//locators:
+    const username = page.locator("#username");
+    const password = page.locator("#password");
+    const radioBtns = page.locator(".radiotextsty");
+    const checkbox = page.locator("#terms");
+```
+1. The `.toBeChecked()` action is performed outside, so `await` is for the whole action
+```js
+await expect(checkbox).toBeChecked(); 
+``` 
+
+2. In other way, `.isChecked()` action is performed inside the `expect`, therefore `await` goes inside as well.
+```js
+expect(await checkbox.isChecked())
+```
+
+> Review [toHaveattribute(name, value)](https://playwright.dev/docs/api/class-locatorassertions#locator-assertions-to-have-attribute)
+
+having this element
+```html
+<a href="https://rahulshettyacademy.com/documents-request" class="blinkingText" target="_blank">
+  Free Access to InterviewQues/ResumeAssistance/Material
+</a>
+```
+use the folloing code:
+```js
+const documentLink = page.locator('a[href*="documents-request"]');
+
+//...
+
+await expect(documentLink).toHaveAttribute('class', 'blinkingText');
+```
+# Lecture 020 -
+# Lecture 021 -
+# Lecture 022 -
+# Lecture 023 -
+# Lecture 024 -
+# Lecture 025 -
+# Lecture 026 -
+
+# Markdown code
+[Dominando Markdown Listas: La Guía Definitiva.](https://denshub.com/es/mastering-markdown-lists/)

@@ -41,31 +41,3 @@ test('First Playwright test', async ( {page} ) => {
     console.log(allTitles);
     
 });
-
-test("second playwright test", async ( {page} ) => {
-    await page.goto("https://www.google.com");
-    
-    //get the tile - assertion:
-    const title = await page.title();
-    console.log("title: ", title);
-    
-    //expect(page).toHaveTitle('Google');  /* it need await first => error */
-    await expect(page).toHaveTitle('Google');
-});
-
-test.only("Creating previous variable/locators", async ( {page} ) => {
-    await page.goto("https://rahulshettyacademy.com/loginpagePractise/"); 
-
-    //variables: without await
-    const username = page.locator('#username');
-    const password = page.locator('[type="password"]');
-    const signInBtn = page.locator('#signInBtn');
-
-    //actions
-    await username.fill('rahulshettyacademy');
-    await password.fill('learning');
-    await signInBtn.click();
-    
-    console.log(await page.locator(".card-body a").textContent());
-    await page.waitForTimeout(2500);
-});
