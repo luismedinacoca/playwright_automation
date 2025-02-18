@@ -708,8 +708,99 @@ const documentLink = page.locator('a[href*="documents-request"]');
 
 await expect(documentLink).toHaveAttribute('class', 'blinkingText');
 ```
-# Lecture 020 -
-# Lecture 021 -
+# Lecture 020 - Handling Child window & tab with Playwright by Switching browser contexxt
+
+```js
+test('Child window handling', async ({ browser }) => {
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    await page.goto("https://rahulshettyacademy.com/loginpagePractise/")
+
+    //locators:
+    const documentLink = page.locator('a[href*="documents-request"]');
+
+    await expect(documentLink).toHaveAttribute('class', 'blinkingText');
+    await expect(documentLink).toHaveClass('blinkingText');
+    
+    // Event Handling:
+    const [newPage] = await Promise.all(
+        [
+            context.waitForEvent('page'), // listen for any new page pending, rejected, fulfilled
+            await documentLink.click(), // new page is opened
+        ]
+    )
+    const redText = await newPage.locator('.red').textContent();
+    console.log("Text from new tab: ", redText);
+});
+```
+and from Gemini
+```js
+test("Open and handling a new Tab", async ({ browser}) => {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+
+  const documentLink = page.locator('a[href*="documents-request"]');
+
+  await page.goto('https://rahulshettyacademy.com/loginpagePractise/');
+
+  // Option 1: Using `page.waitForEvent` (Recommended)
+  const [newPage] = await Promise.all([
+    page.waitForEvent('popup'), // Wait for the 'popup' event
+    documentLink.click(), // Click the link that opens the new tab
+  ]);
+
+  // Now you have the new page object in 'newPage'
+  await newPage.waitForLoadState(); // Wait for the new page to load
+  const newPageURL = await newPage.url();
+  console.log("👉🏽 New Tab URL:", newPageURL);
+  // Perform your assertions on the new page here
+  await expect(newPage).toHaveURL(/documents-request/); // Example assertion
+
+  //await newPage.waitForTimeout(3000);
+
+  const redText = await newPage.locator('.red').textContent();
+  console.log("👁️ Red text from new tab: ", redText);
+
+
+  await newPage.close(); // Close the new tab
+  await page.close(); // Close the original tab
+  await context.close();
+  await browser.close();
+})
+```
+# Lecture 021 - What is Playwright Inspector? And how to debug the playwright script
+
+## Executing in debug mode:
+```js
+$ npx playwright test test_path.spec.js --debug
+```
+It will open a playwright inspector window
+
+<img src="./Images/Section06/lecture021_locator.png">
+
+## Click on Record then click on "Pick Locator":
+
+> <img src="./Images/Section06/lecture021_record_and_pickLocator.png">
+
+### Getting `Sign In` button selector with `getByRole()`:
+> <img src="./Images/Section06/leture021-SignInBtn_locator.png">
+
+```js
+await page.getByRole('button', {name: 'Sign In'}).click()
+```
+### Getting `Terms and conditions` link selector with `getByRole()`:
+> <img src="./Images/Section06/lecture021-Terms&Condictions_locator.png">
+
+```js
+await page.getByRole('link', {name: 'terms and conditions'}).click()
+```
+
+### Getting `Okay` button link with `getByRole()`:
+> <img src="./Images/Section06/lecture021-Alert_Okey_locator.png">
+
+```js
+await page.getByRole('button', {name: 'Okay'}).click()
+```
 # Lecture 022 -
 # Lecture 023 -
 # Lecture 024 -
