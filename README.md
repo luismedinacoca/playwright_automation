@@ -801,9 +801,38 @@ await page.getByRole('link', {name: 'terms and conditions'}).click()
 ```js
 await page.getByRole('button', {name: 'Okay'}).click()
 ```
-# Lecture 022 -
-# Lecture 023 -
-# Lecture 024 -
+# Lecture 022 - Codegen tool to record & Playback with generated automation script
+
+```js
+$ npx playwright codegen URL_Link
+```
+
+
+# Lecture 024 - Detailed view of Test Traces, HTML reports, logs & Screenshots for test results
+
+## 1. Create a screenshot for every log:
+Go to `playwirght.config.js` file, and add `screenshot: 'on'` inside `module.exports` > `use`:
+```js
+module.exports = defineConfig({
+  testDir: './tests',
+  timeout: 15 * 1000,
+  reporter: 'html',
+  use: {
+    screenshot: 'on',
+    trace: 'retain-on-failure', 
+    headless : true, 
+  },
+  expect: {
+    timeout: 5_000,
+  },
+  ...
+});  
+```
+
+## 2. Click on trace screenshot
+<img src="./Images/Section06/lecture024-HTML_Result.png">
+<img src="./Images/Section06/lecture024-testResult_traceResult.png">
+
 # Lecture 025 -
 # Lecture 026 -
 
