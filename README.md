@@ -1,4 +1,5 @@
 # Section 01 - Introduction to Playwright Automation & Course expectations
+
 1. Appendix - Learn JavaScript Fundamentals from Scratch for Automation
 2. How this Course is designed? Topics Breakup
 3. HInstall Node.js & Visual Studio for setting up Playwright Environment
@@ -19,7 +20,7 @@
 
 # Section 09 - Handling Web dialogs, Frames & Event listeners with Playwright
 
-# Section 10 - API Testing with Playwright and  Build mix of Web & API tests
+# Section 10 - API Testing with Playwright and Build mix of Web & API tests
 
 # Section 11 - Session storage & Intercepting Network request/responses with Playwright
 
@@ -27,7 +28,7 @@
 
 # Section 13 - Build Excel Utils and drive uploads downloads using Playwright
 
-# Section 14 - Page Object Patterns & Data driven Parameterization for Playwright  Tests
+# Section 14 - Page Object Patterns & Data driven Parameterization for Playwright Tests
 
 # Section 15 - Project Configurations, & Config options for robust Framework design
 
@@ -46,9 +47,6 @@
 # Section 22 - Bonus Lecture
 
 # Section 23 - Appendix - Learn JavaScript Fundamentals from Scratch for Automation
-
-
-
 
 # Lecture 006 - Create npm Project and install Playwright dependencies
 
@@ -1032,20 +1030,24 @@ await page.locator("a:has-text('Logout')").click();
 
 # Lecture 033 - Understand how GetByLabel & Playwright UI Runner works with an example
 
-## Using `.getByLabel()` for Radio buttons or Checkboxes 
+## Using `.getByLabel()` for Radio buttons or Checkboxes
 
-Having  this checkbox:
-<img src='' for='checkbox'>
+Having this checkbox:
+<img src='./Images/section08/section08-checkbox.png' for='checkbox'>
 
 and its html code:
+
 ```html
 <div class="form-check">
-  <input class="form-check-input" id="exampleCheck1" type="checkbox">
-  <label class="form-check-label" for="exampleCheck1">Check me out if you Love IceCreams!</label>
+  <input class="form-check-input" id="exampleCheck1" type="checkbox" />
+  <label class="form-check-label" for="exampleCheck1"
+    >Check me out if you Love IceCreams!</label
+  >
 </div>
 ```
 
 working with Playwright and using `.getByLabel()` would be like..
+
 ```js
 test("Playwright special locators", async ({ page }) => {
   await page.goto("https://rahulshettyacademy.com/angularpractice/");
@@ -1055,47 +1057,72 @@ test("Playwright special locators", async ({ page }) => {
 ```
 
 Having those radio buttons:
-<img src='' for='radio buttons'>
+<img src='./Images/section08/section08-radioButtons.png' for='radio buttons'>
 
 and its HTML code:
+
 ```html
-<div class="form-group">  
+<div class="form-group">
   <label for="exampleFormControlRadio1">Employment Status: </label>
   <div class="form-check form-check-inline">
-    <input class="form-check-input" id="inlineRadio1" name="inlineRadioOptions" type="radio" value="option1">
+    <input
+      class="form-check-input"
+      id="inlineRadio1"
+      name="inlineRadioOptions"
+      type="radio"
+      value="option1"
+    />
     <label class="form-check-label" for="inlineRadio1">Student</label>
   </div>
 
   <div class="form-check form-check-inline">
-    <input class="form-check-input" id="inlineRadio2" name="inlineRadioOptions" type="radio" value="option2">
+    <input
+      class="form-check-input"
+      id="inlineRadio2"
+      name="inlineRadioOptions"
+      type="radio"
+      value="option2"
+    />
     <label class="form-check-label" for="inlineRadio2">Employed</label>
   </div>
-  
+
   <div class="form-check form-check-inline">
-    <input class="form-check-input" disabled="" id="inlineRadio3" name="inlineRadioOptions" type="radio" value="option3">
-    <label class="form-check-label" for="inlineRadio3">Entrepreneur (disabled)</label>
+    <input
+      class="form-check-input"
+      disabled=""
+      id="inlineRadio3"
+      name="inlineRadioOptions"
+      type="radio"
+      value="option3"
+    />
+    <label class="form-check-label" for="inlineRadio3"
+      >Entrepreneur (disabled)</label
+    >
   </div>
 </div>
 ```
+
 Working with Playwright and using `.getByLabel()` would be like ..
+
 ```js
 test("Playwright special locators", async ({ page }) => {
   await page.goto("https://rahulshettyacademy.com/angularpractice/");
 
-  await page.getByLabel('Employed').check();
-  
-  const employedChecked = await page.getByLabel('Employed').isChecked();
+  await page.getByLabel("Employed").check();
+
+  const employedChecked = await page.getByLabel("Employed").isChecked();
   expect(employedChecked).toBeTruthy();
-  if(employedChecked){
+  if (employedChecked) {
     console.log("Employed radio button is checked");
   }
 });
 ```
 
 Having a dropdown:
-<img src='' alt='dropdown'>
+<img src='./Images/section08/section08-gender-label-selectOptions.png' alt='dropdown'>
 
 it's allows to use `.getByLabel()` method because they both have for in label and id in select, same value. As you can see in its html code is:
+
 ```html
 <div class="form-group">
   <label for="exampleFormControlSelect1">Gender</label>
@@ -1105,14 +1132,183 @@ it's allows to use `.getByLabel()` method because they both have for in label an
   </select>
 </div>
 ```
+
 working with Playwright and `.getByLabel()` would be like..
+
 ```js
 test("Playwright special locators", async ({ page }) => {
   await page.goto("https://rahulshettyacademy.com/angularpractice/");
 
-  await page.getByLabel('Gender').selectOption('Female');
+  await page.getByLabel("Gender").selectOption("Female");
 });
 ```
+
+working with accessibility:
+<img src="./Images/section08/section08-getByRole()-accesibility.png">
+
+```js
+const loginBtn = page.getByRole("button", { name: "Submit" });
+await loginBtn.click();
+```
+
+# Lecture 042 - Validate if element is hidden or displayed mode with Playwright
+
+## 1. Going back with `.goBack()` and going forward with `.goForward()` between pages:
+
+```js
+test("Going back and forward between different pages", async ({ page }) => {
+  await page.goto("https://rahulshettyacademy.com/AutomationPractice/");
+  await page.waitForTimeout(500);
+
+  await page.goto("https://www.google.com/");
+  await page.waitForTimeout(500);
+
+  await page.goBack();
+  await page.waitForTimeout(150);
+
+  await page.goForward();
+  await page.waitForTimeout(500);
+});
+```
+
+## 2. Verifying whether an element is visible or not with `.toBevisible()` or `.toBeHidden()`:
+
+<img src="./Images/section09/section09-displayedElement.png" alt="">
+
+> after clicking on `Hide` button
+
+<img src="./Images/section09/section09-hiddenElement.png" alt="">
+
+```js
+test.only("`.toBeVisible() method`", async ({ page }) => {
+  await page.goto("https://rahulshettyacademy.com/AutomationPractice/");
+
+  await expect(page.locator("#displayed-text")).toBeVisible();
+
+  //clicking on this element, it will hide the element:
+  await page.locator("#hide-textbox").click();
+
+  await expect(page.locator("#displayed-text")).toBeHidden();
+});
+```
+
+# Lecture 043 - How to automate Java/Javascript Alert popups with Playwright
+
+<img src="./Images/section09/section09-confirmAlertDialog.png">
+
+> 1. Any alert in Playwright is considered as `dialog`, so in this case we use `page.on()` with two parameters, one is a title and the other one is a callback function which needs dialog as argument.
+
+```js
+test("Alert or Dialog", async ({ page }) => {
+  await page.goto("https://rahulshettyacademy.com/AutomationPractice/");
+
+  // In playwright any alert is considered as "dialog"
+  page.on("dialog", (dialog) => {
+    ...
+  });
+  await page.locator("#confirmbtn").click();
+});
+```
+
+> 2. In order to accept or confirm this alert/dialog, we need to apply the `dialog.accept()` method.
+
+```js
+test("Alert - Confirm", async ({ page }) => {
+  await page.goto("https://rahulshettyacademy.com/AutomationPractice/");
+
+  page.on("dialog", (dialog) => dialog.accept());
+  await page.locator("#confirmbtn").click();
+});
+```
+
+> 3. In order to cancel the alert/dialog we must apply `dialog.dismiss()` method.
+
+```js
+test("Alert - Confirm", async ({ page }) => {
+  await page.goto("https://rahulshettyacademy.com/AutomationPractice/");
+
+  page.on("dialog", (dialog) => dialog.dismiss());
+  await page.locator("#confirmbtn").click();
+});
+```
+
+> 4. In order to verify the alert/dialog message we should validate its message using `dialog.message()` method:
+
+```js
+test("Dismiss alert", async ({ page }) => {
+  page.on("dialog", async (dialog) => {
+    expect(dialog.message()).toContain(
+      "Hello , Are you sure you want to confirm?"
+    ); // Verify alert message
+    await dialog.dismiss();
+  });
+});
+```
+
+## Mouse hover: `.hover()`
+
+<img src="./Images/section09/section09-beforeMouseHover.png" alt="before hover">
+<img src="./Images/section09/section09-afterMouseHover.png" alt="after hover">
+
+```js
+test("Hover over the 'mouse hover' button", async ({ page }) => {
+  await page.goto("https://rahulshettyacademy.com/AutomationPractice/");
+
+  // scrolling near to mouse hover element:
+  const totalAmount = await page.locator(".totalAmount");
+  totalAmount.evaluate((element) => element.scrollIntoView());
+
+  // #mousehover
+  await page.locator("#mousehover").hover();
+});
+```
+
+# Lecture 044 - How to handle & Automate frames
+
+> Using `.frameLocator()` method.
+
+```js
+test("Alert - Confirm", async ({ page }) => {
+  await page.goto("https://rahulshettyacademy.com/AutomationPractice/");
+
+  const thirdBlock = await page.locator(".block").nth(3);
+  thirdBlock.evaluate((Element) => Element.scrollIntoView());
+  await page.waitForTimeout(1500);
+
+  //clicking on iframe locator ID:
+  const framePage = page.frameLocator("iframe#courses-iframe");
+
+  //visible locator only
+  framePage.locator('li a[href*="lifetime-access"]:visible').click();
+  const textCheck = await framePage.locator(".text h2 span").textContent();
+
+  console.log(textCheck);
+  expect(textCheck).toBe("13,522");
+
+  await page.waitForTimeout(1500);
+});
+```
+
+
+# Lecture 0 -
+
+# Lecture 0 -
+
+# Lecture 0 -
+
+# Lecture 0 -
+
+# Lecture 0 -
+
+# Lecture 0 -
+
+# Lecture 0 -
+
+# Lecture 0 -
+
+# Lecture 0 -
+
+# Lecture 0 -
 
 # Lecture 0 -
 
