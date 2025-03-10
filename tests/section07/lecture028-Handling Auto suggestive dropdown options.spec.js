@@ -180,7 +180,7 @@ test.describe("Test Cases - Swag - Sauce Demo", () => {
   });
 });
 
-test.describe.only("", () => {
+test.describe.only("e2e Testing - Rahul Shetty Academy Client page", () => {
   test("Test Rahul Shetty page", async ({page}) => {
     const userName = page.locator('#userEmail');
     const password = page.locator('#userPassword');

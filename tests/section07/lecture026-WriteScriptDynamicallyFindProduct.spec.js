@@ -1,6 +1,6 @@
 import { test, expect, describe } from "@playwright/test";
 
-test.describe.skip("Test Cases", () => {
+test.describe("Test Cases", () => {
   const standardUser = "standard_user";
   const lockedOutUser = "locked_out_user";
   const problemUser = "problem_user";
@@ -13,7 +13,7 @@ test.describe.skip("Test Cases", () => {
     await page.goto("https://www.saucedemo.com/");
   });
 
-  test.skip("standard-user login ", async ({ page }) => {
+  test("standard-user login ", async ({ page }) => {
     const title = page.locator('[data-test="title"]');
     const burgerIcon = page.locator(".bm-burger-button");
     const logoutOption = page.locator("#logout_sidebar_link");
@@ -37,7 +37,7 @@ test.describe.skip("Test Cases", () => {
     await page.waitForTimeout(1500);
   });
 
-  test.skip("Locked-out-user", async ({ page }) => {
+  test("Locked-out-user", async ({ page }) => {
     const errorLocator = page.locator('[data-test="error"]');
 
     await page.locator('[data-test="username"]').fill(lockedOutUser);
@@ -61,7 +61,7 @@ test.describe.skip("Test Cases", () => {
     await page.waitForTimeout(1500);
   });
 
-  test.skip("Problem-user", async ({ page }) => {
+  test("Problem-user", async ({ page }) => {
     const title = page.locator('[data-test="title"]');
     const burgerIcon = page.locator(".bm-burger-button");
     const srcImg = page.locator(".inventory_item_img img");
@@ -93,7 +93,7 @@ test.describe.skip("Test Cases", () => {
     await page.waitForTimeout(1500);
   });
 
-  test.skip("Performance-glitch-user", async ({ page }) => {
+  test("Performance-glitch-user", async ({ page }) => {
     const title = page.locator('[data-test="title"]');
     const burgerIcon = page.locator(".bm-burger-button");
 
@@ -117,7 +117,7 @@ test.describe.skip("Test Cases", () => {
     await page.waitForTimeout(1500);
   });
 
-  test.skip("Username entered only", async ({ page }) => {
+  test("Username entered only", async ({ page }) => {
     const usernameField = page.locator('[data-test="username"]');
     const loginBtn = page.locator('[data-test="login-button"]');
     const errorPwdMissing = page.locator('[data-test="error-button"]');
@@ -133,7 +133,7 @@ test.describe.skip("Test Cases", () => {
     await page.waitForTimeout(1500);
   });
 
-  test.skip("Password entered only", async ({ page }) => {
+  test("Password entered only", async ({ page }) => {
     const passwordField = page.locator('[data-test="password"]');
     const loginBtn = page.locator('[data-test="login-button"]');
     const errorUsrMissing = page.locator('[data-test="error-button"]');
@@ -150,7 +150,7 @@ test.describe.skip("Test Cases", () => {
     await page.waitForTimeout(1500);
   });
 
-  test.skip("No username neither Password entered", async ({ page }) => {
+  test("No username neither Password entered", async ({ page }) => {
     const loginBtn = page.locator('[data-test="login-button"]');
     const errorUsrMissing = page.locator('[data-test="error-button"]');
     const errorUsrLocator = page.locator('[data-test="error"]');

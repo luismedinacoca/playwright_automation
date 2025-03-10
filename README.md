@@ -1,3 +1,55 @@
+# Section 01 - Introduction to Playwright Automation & Course expectations
+1. Appendix - Learn JavaScript Fundamentals from Scratch for Automation
+2. How this Course is designed? Topics Breakup
+3. HInstall Node.js & Visual Studio for setting up Playwright Environment
+
+# Section 02 - 3 hours of Javascript Fundamentals including coding exercises
+
+# Section 03 - Getting started with Playwright Automation Core concepts
+
+# Section 04 - Playwright Basic methods for web automation testing with examples
+
+# Section 05 - Handling UI Components(Dropdowns ,Radio Buttons, Childwindows) with Playwright
+
+# Section 06 - Learn Playwright inspectors, Trace Viewers & Codegen tools with Demo examples
+
+# Section 07 - End to End Web Automation practice exercise with Playwright
+
+# Section 08 - Playwright Unique GetBy Locators for Smart Testing & Test Runner usage
+
+# Section 09 - Handling Web dialogs, Frames & Event listeners with Playwright
+
+# Section 10 - API Testing with Playwright and  Build mix of Web & API tests
+
+# Section 11 - Session storage & Intercepting Network request/responses with Playwright
+
+# Section 12 - Perform Visual Testing with Playwright Algorithms
+
+# Section 13 - Build Excel Utils and drive uploads downloads using Playwright
+
+# Section 14 - Page Object Patterns & Data driven Parameterization for Playwright  Tests
+
+# Section 15 - Project Configurations, & Config options for robust Framework design
+
+# Section 16 - Test Retries , Serial & Parallel execution & Tagging Tests in Playwright
+
+# Section 17 - HTMl & Allure Reporting & CI/CD Jenkins Integration
+
+# Section 18 - Understand TypeScript Basics and Refactor Playwright Framework to TypeScript
+
+# Section 19 - Playwright Cucumber Framework Integration with its features
+
+# Section 20 - E2E Playwright Devops Solution using Azure Cloud Parallel hosting & CI/CD
+
+# Section 21 - Course Code download
+
+# Section 22 - Bonus Lecture
+
+# Section 23 - Appendix - Learn JavaScript Fundamentals from Scratch for Automation
+
+
+
+
 # Lecture 006 - Create npm Project and install Playwright dependencies
 
 ## 1. create a Project folder
@@ -943,10 +995,6 @@ module.exports = defineConfig({
 <img src="./Images/Section06/lecture024-HTML_Result.png">
 <img src="./Images/Section06/lecture024-testResult_traceResult.png">
 
-# Lecture 025 -
-
-# Lecture 026 -
-
 # Lecture 027 -
 
 Since this element:
@@ -981,6 +1029,92 @@ await page.locator("a:has-text('Logout')").click();
 ```
 
 [https://playwright.dev/docs/other-locators#css-locator](https://playwright.dev/docs/other-locators#css-locator)
+
+# Lecture 033 - Understand how GetByLabel & Playwright UI Runner works with an example
+
+## Using `.getByLabel()` for Radio buttons or Checkboxes 
+
+Having  this checkbox:
+<img src='' for='checkbox'>
+
+and its html code:
+```html
+<div class="form-check">
+  <input class="form-check-input" id="exampleCheck1" type="checkbox">
+  <label class="form-check-label" for="exampleCheck1">Check me out if you Love IceCreams!</label>
+</div>
+```
+
+working with Playwright and using `.getByLabel()` would be like..
+```js
+test("Playwright special locators", async ({ page }) => {
+  await page.goto("https://rahulshettyacademy.com/angularpractice/");
+
+  await page.getByLabel("Check me out if you Love IceCreams!").click();
+});
+```
+
+Having those radio buttons:
+<img src='' for='radio buttons'>
+
+and its HTML code:
+```html
+<div class="form-group">  
+  <label for="exampleFormControlRadio1">Employment Status: </label>
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" id="inlineRadio1" name="inlineRadioOptions" type="radio" value="option1">
+    <label class="form-check-label" for="inlineRadio1">Student</label>
+  </div>
+
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" id="inlineRadio2" name="inlineRadioOptions" type="radio" value="option2">
+    <label class="form-check-label" for="inlineRadio2">Employed</label>
+  </div>
+  
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" disabled="" id="inlineRadio3" name="inlineRadioOptions" type="radio" value="option3">
+    <label class="form-check-label" for="inlineRadio3">Entrepreneur (disabled)</label>
+  </div>
+</div>
+```
+Working with Playwright and using `.getByLabel()` would be like ..
+```js
+test("Playwright special locators", async ({ page }) => {
+  await page.goto("https://rahulshettyacademy.com/angularpractice/");
+
+  await page.getByLabel('Employed').check();
+  
+  const employedChecked = await page.getByLabel('Employed').isChecked();
+  expect(employedChecked).toBeTruthy();
+  if(employedChecked){
+    console.log("Employed radio button is checked");
+  }
+});
+```
+
+Having a dropdown:
+<img src='' alt='dropdown'>
+
+it's allows to use `.getByLabel()` method because they both have for in label and id in select, same value. As you can see in its html code is:
+```html
+<div class="form-group">
+  <label for="exampleFormControlSelect1">Gender</label>
+  <select class="form-control" id="exampleFormControlSelect1">
+    <option>Male</option>
+    <option>Female</option>
+  </select>
+</div>
+```
+working with Playwright and `.getByLabel()` would be like..
+```js
+test("Playwright special locators", async ({ page }) => {
+  await page.goto("https://rahulshettyacademy.com/angularpractice/");
+
+  await page.getByLabel('Gender').selectOption('Female');
+});
+```
+
+# Lecture 0 -
 
 # Markdown code
 

@@ -1,7 +1,7 @@
 import { test, expect, describe } from "@playwright/test";
 
-test.describe.skip("Test Cases", () => {
-  test.skip("test", async ({ page }) => {
+test.describe("Test Cases", () => {
+  test("test", async ({ page }) => {
     //await page.goto("https://www.tiendaqa.centyc.com.ar");
     //await page.waitForTimeout(2500)
 
