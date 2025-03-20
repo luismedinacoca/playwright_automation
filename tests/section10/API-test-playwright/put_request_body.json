@@ -1,0 +1,11 @@
+{
+    "firstname": "postman by testers talk",
+    "lastname": "rest assured by testers talk",
+    "totalprice": 111,
+    "depositpaid": true,
+    "bookingdates": {
+        "checkin":"2025-03-14",
+        "checkout":"2025-03-31"
+    },
+    "additionalneeds":"la mona jimenez" 
+}

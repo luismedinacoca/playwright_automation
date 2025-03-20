@@ -7,8 +7,8 @@ test.describe("Rahul Shetty Academy - Client page", () => {
     const loginBtn = page.getByRole('button', {name: "login"});
     const adidas = "ADIDAS ORIGINAL";
     const products = page.locator(".card-body")
-    const userEmail = 'pyramide_glass@mailinator.com';
-    const userPwd = 'Benabar2025!';
+    const userEmail = 'suspiros_mza@mailinator.com';
+    const userPwd = 'Test!001';
 
     await page.goto("https://rahulshettyacademy.com/client/")//get the tile - assertion:
     

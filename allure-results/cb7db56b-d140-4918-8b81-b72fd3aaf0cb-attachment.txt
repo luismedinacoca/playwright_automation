@@ -1,0 +1,19 @@
+expect(loginResponse.ok()).toBeTruthy()
+loginResponse.ok():  true
+
+expect(loginResponse.status()).toBe(200)
+loginResponse.status():  200
+
+await loginResponse.json():  {
+  token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2QwODUzNmMwMTlmYjFhZDYyMWE3NzYiLCJ1c2VyRW1haWwiOiJzdXNwaXJvc19temFAbWFpbGluYXRvci5jb20iLCJ1c2VyTW9iaWxlIjoyNjEzNDU2Nzg5LCJ1c2VyUm9sZSI6ImN1c3RvbWVyIiwiaWF0IjoxNzQyNDIwNDQ4LCJleHAiOjE3NzM5NzgwNDh9.wEK60qxJFZ7K-04DMsz1WdbO5XHvr053QUwVZC0NrqQ',
+  userId: '67d08536c019fb1ad621a776',
+  message: 'Login Successfully'
+}
+
+expect(loginResponseJson.token).toBeDefined()
+const loginResponseJson = await loginResponse.json()
+loginResponseJson.token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2QwODUzNmMwMTlmYjFhZDYyMWE3NzYiLCJ1c2VyRW1haWwiOiJzdXNwaXJvc19temFAbWFpbGluYXRvci5jb20iLCJ1c2VyTW9iaWxlIjoyNjEzNDU2Nzg5LCJ1c2VyUm9sZSI6ImN1c3RvbWVyIiwiaWF0IjoxNzQyNDIwNDQ4LCJleHAiOjE3NzM5NzgwNDh9.wEK60qxJFZ7K-04DMsz1WdbO5XHvr053QUwVZC0NrqQ
+
+const token = loginResponseJson.token
+
+Token obtenido: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2QwODUzNmMwMTlmYjFhZDYyMWE3NzYiLCJ1c2VyRW1haWwiOiJzdXNwaXJvc19temFAbWFpbGluYXRvci5jb20iLCJ1c2VyTW9iaWxlIjoyNjEzNDU2Nzg5LCJ1c2VyUm9sZSI6ImN1c3RvbWVyIiwiaWF0IjoxNzQyNDIwNDQ4LCJleHAiOjE3NzM5NzgwNDh9.wEK60qxJFZ7K-04DMsz1WdbO5XHvr053QUwVZC0NrqQ

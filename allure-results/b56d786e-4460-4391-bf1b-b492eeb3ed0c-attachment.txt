@@ -1,0 +1,10 @@
+All Titles on page:  [
+  'ZARA COAT 3',
+  'ADIDAS ORIGINAL',
+  'IPHONE 13 PRO',
+  'qwerty',
+  'Automation',
+  'Automation',
+  'Automation',
+  'Automation'
+]

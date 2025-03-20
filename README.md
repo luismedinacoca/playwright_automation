@@ -1,3 +1,5 @@
+> # [Repo link](https://github.com/luismedinacoca/playwright_automation/blob/master/README.md)
+
 # Section 01 - Introduction to Playwright Automation & Course expectations
 
 1. Appendix - Learn JavaScript Fundamentals from Scratch for Automation
@@ -1289,22 +1291,115 @@ test("Alert - Confirm", async ({ page }) => {
 });
 ```
 
+# SECTION 10 - API Testing with Playwright and Build mix of Web & API tests
 
-# Lecture 0 -
+## Lecture 045 - Understanding the importance of API integration calls for Web tests
 
-# Lecture 0 -
+1. When you open this link [E-commerce - Rahul Shetty Academy](https://rahulshettyacademy.com/client), you'll enter your credentials as follows:
+   <img src="./Images/section10/section10-Login-credentials.png" alt="login-UI">
+   then open devtools and select or click on "Network"
 
-# Lecture 0 -
+2. Click on `Login` button then click on `login` backend call as you can see in the picture:
+   <img src="./Images/section10/section10-devtool-network-login-headers.png" alt="Headers">
+   You'll notice in Headers tab:
 
-# Lecture 0 -
+- request URL: `https://rahulshettyacademy.com/api/ecom/auth/login`
+- request method: `POST`
+- Status Code: `200`
 
-# Lecture 0 -
+3. Now you can click on `Payload` tab in order to see your credentials data
+   <img src="./Images/section10/section10-devtool-network-login-payload.png" alt="Login-devtool-payload">
 
-# Lecture 0 -
+4. Click on `Response` tab in order to see the `token` value and its status as `Login Successfully`
+   <img src="./Images/section10/section10-devtool-network-login-response.png" alt="Login-response">
 
-# Lecture 0 -
+5. Another way to verify your token is clicking on `Application` - `Local Storage` - `URL` - `Token`
+   <img src="./Images/section10/section10-devtool-application-localStorage.png" alt="Login-devtools-LocalStorage">
 
-# Lecture 0 -
+6. All before steps would be done in one step using `Postman` as follows:
+   <img src="./Images/section10/section10-postman-POST-login.png" alt="">
+
+7. Once you got the token value, open a different browser, enter the same URL [E-commerce - Rahul Shetty Academy](https://rahulshettyacademy.com/client), open devtools, go to application, local storage, URL and add the token and its value. Refresh this page and you will be logged in without entering any credentials. This is main idea you can automate requesting the token value and inject this value in order to be looged in the e-commerce page without entering whole credentials at all.
+
+## Lecture 046 - Playwright request method to make API calls and grab response - Example
+
+```js
+const token;
+
+const loginPayload = {
+  userEmail: "suspiros_mza@mailinator.com",
+  userPassword: "Test!001",
+};
+
+test.beforeAll("Getting the token value", async({ request, page }) => {
+  try {
+    const loginResponse = await request.post(
+      "https://rahulshettyacademy.com/api/ecom/auth/login", {
+        data: loginPayload,
+        headers: {
+          "Content-Type": "application/json", // Asegura que el tipo de contenido es correcto
+        },
+      }
+    );
+
+    expect(loginResponse.ok()).toBeTruthy();
+    expect(loginResponse.status()).toBe(200);
+
+    const loginResponseJson = await loginResponse.json();
+    expect(loginResponseJson.token).toBeDefined();
+
+    token = loginResponseJson.token;
+  } catch (error) {
+    console.error("Error durante el login:", error);
+    throw error;
+  }
+})
+
+test.beforeEach("...", async ({ request, page }) => {
+  //missing how to add the token in local storage browser...
+})
+
+test("...", async ({ request, page }) => {
+  await page.goto("https://rahulshettyacademy.com/client/");
+})
+```
+
+## Lecture 047 - Parsing API response & passing token to browser local storage with Playwright
+
+1. How to inject the found token in local storage (application tab from devtools)
+
+```JS
+const token;
+
+test.beforeAll("Getting the token value", async({ request, page }) => {
+
+  // getting the token...
+  token = loginResponseJson.token;
+})
+
+test("Parsing API token to browser local storage", async ({ page }) => {
+  // it  would be better keep it in test.beforeEach()
+  await page.addInitScript((value) => {
+    window.localStorage.setItem("token", value);
+  }, token);
+
+  await page.goto("https://rahulshettyacademy.com/client/");
+});
+```
+
+## Lecture 049 - End to end validation with mix of API & Web concepts - Reduce test time
+
+`toBeDefined()` method:
+
+```
+.toBeDefined(): Verifica que el valor de orderResponseJson.orders no sea undefined.
+```
+
+# Lecture 050 - Important Prerequisite before going through next 2 videos
+
+# Lecture 051 - Refactor API calls from utils folder and isolate from Web test logic
+
+# Lecture 052 - Part 2 - Refactor API calls from utils folder and isolate from Web test logic
 
 # Lecture 0 -
 
@@ -1315,3 +1410,12 @@ test("Alert - Confirm", async ({ page }) => {
 # Markdown code
 
 [Dominando Markdown Listas: La Guía Definitiva.](https://denshub.com/es/mastering-markdown-lists/)
+
+```
+$ npm install @faker-js/faker --save-dev
+$ npm install --save luxon
+```
+
+[Playwright API Testing Tutorail Crash Course 2024](https://youtu.be/lM-lqPun9P8)
+
+New Playwright Framework [BakkappaN / MicrosoftD365CRMPlaywrightFramework](https://github.com/BakkappaN/MicrosoftD365CRMPlaywrightFramework/tree/main)

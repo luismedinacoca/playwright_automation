@@ -1,0 +1,7 @@
+📌 orderResponseJson:  {
+  orders: [ '67dc32e8c019fb1ad630a59d', '67dc32e9c019fb1ad630a5a0' ],
+  productOrderId: [ '67a8dde5c0d3e6622a297cc8', '67a8df56c0d3e6622a297ccd' ],
+  message: 'Order Placed Successfully'
+}
+my new Order ID:  67dc32e8c019fb1ad630a59d
+my new Order ID:  67dc32e9c019fb1ad630a5a0

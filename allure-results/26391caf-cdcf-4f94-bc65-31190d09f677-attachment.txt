@@ -1,0 +1,5 @@
+iphone X
+iphone X
+Samsung Note 8
+allTitles [ 'iphone X', 'Samsung Note 8', 'Nokia Edge', 'Blackberry' ]
+allTitles.length:  4

@@ -180,33 +180,33 @@ test.describe("Test Cases - Swag - Sauce Demo", () => {
   });
 });
 
-test.describe.only("e2e Testing - Rahul Shetty Academy Client page", () => {
-  test("Test Rahul Shetty page", async ({page}) => {
-    const userName = page.locator('#userEmail');
-    const password = page.locator('#userPassword');
-    const loginBtn = page.locator('#login');
+test.describe("e2e Testing - Rahul Shetty Academy Client page", () => {
+  test("Test Rahul Shetty page", async ({ page }) => {
+    const userName = page.locator("#userEmail");
+    const password = page.locator("#userPassword");
+    const loginBtn = page.locator("#login");
     const adidas = "ADIDAS ORIGINAL";
-    const products = page.locator(".card-body")
-    const userEmail = 'pyramide_glass@mailinator.com';
-    const userPwd = 'Benabar2025!';
+    const products = page.locator(".card-body");
+    const userEmail = "suspiros_mza@mailinator.com";
+    const userPwd = "Test!001";
 
-    await page.goto("https://rahulshettyacademy.com/client/")//get the tile - assertion:
-    
+    await page.goto("https://rahulshettyacademy.com/client/"); //get the tile - assertion:
+
     await userName.fill(userEmail);
     await password.fill(userPwd);
     await loginBtn.click();
 
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState("networkidle");
 
     const titles = await page.locator(".card-body b").allTextContents();
     //console.log(titles);
-    
+
     // ************* Home page ************* \\
-    
+
     //ZARA COAT 3 product might be selected:
-    for(let i = 0; i < titles.length; i++) {
-      const product = await products.nth(i).locator('b').textContent();
-      if(await products.nth(i).locator('b').textContent() === adidas) {
+    for (let i = 0; i < titles.length; i++) {
+      const product = await products.nth(i).locator("b").textContent();
+      if ((await products.nth(i).locator("b").textContent()) === adidas) {
         // add product to cart
         await products.nth(i).locator("text= Add To Cart").click();
         break;
@@ -215,112 +215,123 @@ test.describe.only("e2e Testing - Rahul Shetty Academy Client page", () => {
     // ************* Checkout page ************* \\
 
     //click on cart icon in header:
-    await page.locator('[routerlink*="cart"]').click()
-    
+    await page.locator('[routerlink*="cart"]').click();
+
     //console.log("Checkout Page");
-    
+
     //await page.waitForTimeout(500);
-    await page.locator('.cart li').first().waitFor();
-    const AdidasBool = await page.locator('h3:has-text("ADIDAS ORIGINAL")').isVisible();
+    await page.locator(".cart li").first().waitFor();
+    const AdidasBool = await page
+      .locator('h3:has-text("ADIDAS ORIGINAL")')
+      .isVisible();
     expect(AdidasBool).toBeTruthy();
 
     //Click on "Checkout" button:
-    await page.locator('text=checkout').click();
+    await page.locator("text=checkout").click();
     //await page.waitForTimeout(3500);
 
     // ************* Payment page ************* \\
 
-    const cardInfoFields = page.locator('.field input');
+    const cardInfoFields = page.locator(".field input");
 
-    await cardInfoFields.nth(0).fill('4000 0000 0000 1000')
-    await cardInfoFields.nth(1).fill('100')
-    await cardInfoFields.nth(2).fill('Pyramid Glass')
-    await cardInfoFields.nth(3).fill('rahulshettyacademy')
+    await cardInfoFields.nth(0).fill("4000 0000 0000 1000");
+    await cardInfoFields.nth(1).fill("100");
+    await cardInfoFields.nth(2).fill("Pyramid Glass");
+    await cardInfoFields.nth(3).fill("rahulshettyacademy");
     await page.locator("button[type='submit']").click();
-    
-    await page.getByText('* Coupon Applied').waitFor();
-    const coupon = await page.getByText('* Coupon Applied').isVisible();
+
+    await page.getByText("* Coupon Applied").waitFor();
+    const coupon = await page.getByText("* Coupon Applied").isVisible();
     expect(coupon).toBeTruthy();
 
     //await page.locator('[placeholder="Select Country"]').type('United', {delay: 500});
-    await page.locator('[placeholder="Select Country"]').pressSequentially('United');
+    await page
+      .locator('[placeholder="Select Country"]')
+      .pressSequentially("United");
     //await page.getByRole('button', { name: " United Kingdom" }).click();
 
-    const dropdown = page.locator('.ta-results');
+    const dropdown = page.locator(".ta-results");
     const countryName = "United Kingdom";
-    
+
     await dropdown.waitFor();
-    const optionsCount = await dropdown.locator('button').count();
-    for(let i = 0; i < optionsCount; i++){
-      const text = await dropdown.locator('button span').nth(i).textContent();
-      if(text.includes(countryName)){
-        await dropdown.locator('button').nth(i).click();
+    const optionsCount = await dropdown.locator("button").count();
+    for (let i = 0; i < optionsCount; i++) {
+      const text = await dropdown.locator("button span").nth(i).textContent();
+      if (text.includes(countryName)) {
+        await dropdown.locator("button").nth(i).click();
         break;
       }
     }
 
-    const email = await page.locator('.user__name label').textContent();
+    const email = await page.locator(".user__name label").textContent();
     expect(email).toBe(userEmail);
     //console.log("User email is displayed in shipping information section!")
 
-    await page.getByText('place order').click();
-    
+    await page.getByText("place order").click();
+
     // ************* Thank You page ************* \\
 
-    const titleThankyouPage = await page.locator('.hero-primary').textContent();
-    expect(titleThankyouPage).toContain('Thankyou for the order');
+    const titleThankyouPage = await page.locator(".hero-primary").textContent();
+    expect(titleThankyouPage).toContain("Thankyou for the order");
 
-    await expect(page.locator('.hero-primary')).toHaveText(' Thankyou for the order. ');
+    await expect(page.locator(".hero-primary")).toHaveText(
+      " Thankyou for the order. "
+    );
 
-    const orderNumber = await page.locator('.em-spacer-1 .ng-star-inserted').textContent()
+    const orderNumber = await page
+      .locator(".em-spacer-1 .ng-star-inserted")
+      .textContent();
     //orderNumber = orderNumber.replace(' | ', '').replace(' | ', '')
     //console.log(`Order Number: ${orderNumber}`);
     //await page.waitForTimeout(2000);
-
 
     // await page.getByRole("button", {name: "   ORDERS"}).click();
     await page.locator('button[routerlink*="myorders"]').click();
 
     // ************ ORDER Page ************ \\
 
-    await page.locator('tbody').waitFor();
+    await page.locator("tbody").waitFor();
 
-    await page.locator('h1').isVisible();
-    const orderPageTitle = await page.locator('h1').textContent();
-    expect(orderPageTitle).toBe('Your Orders');
+    await page.locator("h1").isVisible();
+    const orderPageTitle = await page.locator("h1").textContent();
+    expect(orderPageTitle).toBe("Your Orders");
 
-    await page.locator('.row button').first().isVisible();
-    const goBackToShopBtn = await page.locator('.row button').first().textContent();
-    expect(goBackToShopBtn).toBe('Go Back to Shop');
+    await page.locator(".row button").first().isVisible();
+    const goBackToShopBtn = await page
+      .locator(".row button")
+      .first()
+      .textContent();
+    expect(goBackToShopBtn).toBe("Go Back to Shop");
 
-    const rows = await page.locator('tbody tr');
+    const rows = await page.locator("tbody tr");
     const rowsCount = await rows.count();
     // console.log(">>> rowsCount: ", rowsCount);
 
-    let rowOrderId = '';
+    let rowOrderId = "";
 
-    for(let i = 0; i < rowsCount; i++){
-      rowOrderId = await rows.nth(i).locator('th').textContent();
+    for (let i = 0; i < rowsCount; i++) {
+      rowOrderId = await rows.nth(i).locator("th").textContent();
       // console.log(rowOrderId)
       // console.log(orderNumber)
-      if(orderNumber.includes(rowOrderId)){
-        console.log('Orders are equals')
-        await rows.nth(i).locator('button.btn-primary').click();
+      if (orderNumber.includes(rowOrderId)) {
+        console.log("Orders are equals");
+        await rows.nth(i).locator("button.btn-primary").click();
         break;
       }
     }
-    
-    // ************** ORDER SUMMARY PAGE ************** \\
-    expect(await page.locator('.email-title').isVisible())
-    const orderSummaryTitle = await page.locator('.email-title').textContent()
-    expect(orderSummaryTitle).toBe(' order summary ')
 
-    await page.locator('[class*="col-text"]').isVisible()
-    const orderSummaryPage = await page.locator('[class*="col-text"]').textContent();
+    // ************** ORDER SUMMARY PAGE ************** \\
+    expect(await page.locator(".email-title").isVisible());
+    const orderSummaryTitle = await page.locator(".email-title").textContent();
+    expect(orderSummaryTitle).toBe(" order summary ");
+
+    await page.locator('[class*="col-text"]').isVisible();
+    const orderSummaryPage = await page
+      .locator('[class*="col-text"]')
+      .textContent();
     // console.log("orderSummaryPage: ", orderSummaryPage);
     expect(orderSummaryPage).toContain(rowOrderId);
-    console.log(`📌 👉🏽 ${orderSummaryPage} contains ${rowOrderId}`)
+    console.log(`📌 👉🏽 ${orderSummaryPage} contains ${rowOrderId}`);
 
-    await page.waitForTimeout(1000);
-  })
-})
+  });
+});

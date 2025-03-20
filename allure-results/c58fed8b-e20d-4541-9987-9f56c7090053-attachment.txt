@@ -1,0 +1,28 @@
+Theodore
+D'Amore
+578
+2025-03-19
+2025-04-08
+post_API_response.ok():  true
+post_API_response.status(): 200
+postAPIresponseJson:  {
+  bookingid: 3819,
+  booking: {
+    firstname: 'Theodore',
+    lastname: "D'Amore",
+    totalprice: 578,
+    depositpaid: true,
+    bookingdates: { checkin: '2025-03-19', checkout: '2025-04-08' },
+    additionalneeds: 'super bowls'
+  }
+}
+postAPIresponseJson.booking.firstname:  Theodore
+postAPIresponseJson.booking.lastname:  D'Amore
+postAPIresponseJson.booking.totalprice:  578
+postAPIresponseJson.booking.depositpaid:  true
+...
+postAPIresponseJson.booking.bookingdates:  { checkin: '2025-03-19', checkout: '2025-04-08' }
+postAPIresponseJson.booking.bookingdates.checkin:  2025-03-19
+postAPIresponseJson.booking.bookingdates.checkout:  2025-04-08
+...
+postAPIresponseJson.booking.additionalneeds:  super bowls

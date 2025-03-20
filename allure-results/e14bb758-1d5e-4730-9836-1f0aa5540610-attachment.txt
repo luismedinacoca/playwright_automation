@@ -1,0 +1,6 @@
+iphone X
+iphone X
+with .selectText() undefined
+Samsung Note 8
+all titles:  [ 'iphone X', 'Samsung Note 8', 'Nokia Edge', 'Blackberry' ]
+First Title is included!

@@ -1,0 +1,11 @@
+{
+    "firstname":"Tester API",
+    "lastname":"Using Playwright",
+    "totalprice":1000,
+    "depositpaid":true,
+    "bookingdates":{
+      "checkin":"2025-04-12",
+      "checkout":"2025-04-30"
+    },
+    "additionalneeds":"super Shakira"
+}

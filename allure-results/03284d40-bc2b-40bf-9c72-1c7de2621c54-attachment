@@ -1,0 +1,249 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: e2e Testing - Rahul Shetty Academy Client page >> Test Rahul Shetty page
+- Location: /Users/luisjaviermedinacoca/Desktop/WORKCENTER/[Playwright]/playwright-automation/tests/section07/lecture028-Handling Auto suggestive dropdown options.spec.js:184:7
+
+# Error details
+
+```
+Error: locator.waitFor: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for locator('.cart li').first() to be visible
+
+    at /Users/luisjaviermedinacoca/Desktop/WORKCENTER/[Playwright]/playwright-automation/tests/section07/lecture028-Handling Auto suggestive dropdown options.spec.js:223:44
+```
+
+# Page snapshot
+
+```yaml
+- navigation:
+  - link "Automation Automation Practice":
+    - heading "Automation" [level=3]
+    - paragraph: Automation Practice
+  - list:
+    - listitem:
+      - button " HOME"
+    - listitem
+    - listitem:
+      - button " ORDERS"
+    - listitem:
+      - button " Cart"
+    - listitem:
+      - button "Sign Out"
+- heading "My Cart" [level=1]
+- button "Continue Shopping❯"
+- heading "No Products in Your Cart !" [level=1]
+```
+
+# Test source
+
+```ts
+  123 |       .textContent();
+  124 |     expect(checkoutOverViewTitle).toBe("Checkout: Overview");
+  125 |
+  126 |     await page.locator('[data-test="payment-info-label"]').isVisible();
+  127 |     await page.locator('[data-test="shipping-info-label"]').isVisible();
+  128 |     await page.locator('[data-test="total-info-label"]').isVisible();
+  129 |     await page.locator('[data-test="total-label"]').isVisible();
+  130 |     await page.locator('[data-test="finish"]').isVisible();
+  131 |     const sauceCard = await page
+  132 |       .locator('[data-test="payment-info-value"]')
+  133 |       .textContent();
+  134 |     expect(sauceCard).toContain("SauceCard #");
+  135 |
+  136 |     await page.locator('[data-test="finish"]').click();
+  137 |
+  138 |     //Assertion - Checkout: Complete page
+  139 |     await page.locator('[data-test="title"]').isVisible();
+  140 |     await page.locator('[data-test="pony-express"]').isVisible();
+  141 |     await page.locator('[data-test="complete-header"]').isVisible();
+  142 |     await page.locator('[data-test="complete-text"]').isVisible();
+  143 |     await page.locator('[data-test="back-to-products"]').isVisible();
+  144 |
+  145 |     const checkoutcompletedTitle = await page
+  146 |       .locator('[data-test="title"]')
+  147 |       .textContent();
+  148 |     expect(checkoutcompletedTitle).toBe("Checkout: Complete!");
+  149 |
+  150 |     const thankHeader = await page
+  151 |       .locator('[data-test="complete-header"]')
+  152 |       .textContent();
+  153 |     expect(thankHeader).toBe("Thank you for your order!");
+  154 |
+  155 |     const thankText = await page
+  156 |       .locator('[data-test="complete-text"]')
+  157 |       .textContent();
+  158 |     expect(thankText).toBe(
+  159 |       "Your order has been dispatched, and will arrive just as fast as the pony can get there!"
+  160 |     );
+  161 |
+  162 |     const backBtnText = await page
+  163 |       .locator('[data-test="back-to-products"]')
+  164 |       .textContent();
+  165 |     expect(backBtnText).toBe("Back Home");
+  166 |
+  167 |     //await page.locator('[data-test="back-to-products"]').click();
+  168 |     await page
+  169 |       .locator('[data-test="back-to-products"]:has-text("Back Home")')
+  170 |       .click();
+  171 |
+  172 |     //Home page:
+  173 |     await page.locator("#menu_button_container").isVisible();
+  174 |     await page.locator(".bm-burger-button").click();
+  175 |
+  176 |     await page.locator("#logout_sidebar_link").isVisible();
+  177 |     //await page.locator("#logout_sidebar_link").click();
+  178 |     //await page.locator("[id='logout_sidebar_link']:has-text('Logout')").click();
+  179 |     await page.locator("a:has-text('Logout')").click();
+  180 |   });
+  181 | });
+  182 |
+  183 | test.describe("e2e Testing - Rahul Shetty Academy Client page", () => {
+  184 |   test("Test Rahul Shetty page", async ({ page }) => {
+  185 |     const userName = page.locator("#userEmail");
+  186 |     const password = page.locator("#userPassword");
+  187 |     const loginBtn = page.locator("#login");
+  188 |     const adidas = "ADIDAS ORIGINAL";
+  189 |     const products = page.locator(".card-body");
+  190 |     const userEmail = "suspiros_mza@mailinator.com";
+  191 |     const userPwd = "Test!001";
+  192 |
+  193 |     await page.goto("https://rahulshettyacademy.com/client/"); //get the tile - assertion:
+  194 |
+  195 |     await userName.fill(userEmail);
+  196 |     await password.fill(userPwd);
+  197 |     await loginBtn.click();
+  198 |
+  199 |     await page.waitForLoadState("networkidle");
+  200 |
+  201 |     const titles = await page.locator(".card-body b").allTextContents();
+  202 |     //console.log(titles);
+  203 |
+  204 |     // ************* Home page ************* \\
+  205 |
+  206 |     //ZARA COAT 3 product might be selected:
+  207 |     for (let i = 0; i < titles.length; i++) {
+  208 |       const product = await products.nth(i).locator("b").textContent();
+  209 |       if ((await products.nth(i).locator("b").textContent()) === adidas) {
+  210 |         // add product to cart
+  211 |         await products.nth(i).locator("text= Add To Cart").click();
+  212 |         break;
+  213 |       }
+  214 |     }
+  215 |     // ************* Checkout page ************* \\
+  216 |
+  217 |     //click on cart icon in header:
+  218 |     await page.locator('[routerlink*="cart"]').click();
+  219 |
+  220 |     //console.log("Checkout Page");
+  221 |
+  222 |     //await page.waitForTimeout(500);
+> 223 |     await page.locator(".cart li").first().waitFor();
+      |                                            ^ Error: locator.waitFor: Test timeout of 30000ms exceeded.
+  224 |     const AdidasBool = await page
+  225 |       .locator('h3:has-text("ADIDAS ORIGINAL")')
+  226 |       .isVisible();
+  227 |     expect(AdidasBool).toBeTruthy();
+  228 |
+  229 |     //Click on "Checkout" button:
+  230 |     await page.locator("text=checkout").click();
+  231 |     //await page.waitForTimeout(3500);
+  232 |
+  233 |     // ************* Payment page ************* \\
+  234 |
+  235 |     const cardInfoFields = page.locator(".field input");
+  236 |
+  237 |     await cardInfoFields.nth(0).fill("4000 0000 0000 1000");
+  238 |     await cardInfoFields.nth(1).fill("100");
+  239 |     await cardInfoFields.nth(2).fill("Pyramid Glass");
+  240 |     await cardInfoFields.nth(3).fill("rahulshettyacademy");
+  241 |     await page.locator("button[type='submit']").click();
+  242 |
+  243 |     await page.getByText("* Coupon Applied").waitFor();
+  244 |     const coupon = await page.getByText("* Coupon Applied").isVisible();
+  245 |     expect(coupon).toBeTruthy();
+  246 |
+  247 |     //await page.locator('[placeholder="Select Country"]').type('United', {delay: 500});
+  248 |     await page
+  249 |       .locator('[placeholder="Select Country"]')
+  250 |       .pressSequentially("United");
+  251 |     //await page.getByRole('button', { name: " United Kingdom" }).click();
+  252 |
+  253 |     const dropdown = page.locator(".ta-results");
+  254 |     const countryName = "United Kingdom";
+  255 |
+  256 |     await dropdown.waitFor();
+  257 |     const optionsCount = await dropdown.locator("button").count();
+  258 |     for (let i = 0; i < optionsCount; i++) {
+  259 |       const text = await dropdown.locator("button span").nth(i).textContent();
+  260 |       if (text.includes(countryName)) {
+  261 |         await dropdown.locator("button").nth(i).click();
+  262 |         break;
+  263 |       }
+  264 |     }
+  265 |
+  266 |     const email = await page.locator(".user__name label").textContent();
+  267 |     expect(email).toBe(userEmail);
+  268 |     //console.log("User email is displayed in shipping information section!")
+  269 |
+  270 |     await page.getByText("place order").click();
+  271 |
+  272 |     // ************* Thank You page ************* \\
+  273 |
+  274 |     const titleThankyouPage = await page.locator(".hero-primary").textContent();
+  275 |     expect(titleThankyouPage).toContain("Thankyou for the order");
+  276 |
+  277 |     await expect(page.locator(".hero-primary")).toHaveText(
+  278 |       " Thankyou for the order. "
+  279 |     );
+  280 |
+  281 |     const orderNumber = await page
+  282 |       .locator(".em-spacer-1 .ng-star-inserted")
+  283 |       .textContent();
+  284 |     //orderNumber = orderNumber.replace(' | ', '').replace(' | ', '')
+  285 |     //console.log(`Order Number: ${orderNumber}`);
+  286 |     //await page.waitForTimeout(2000);
+  287 |
+  288 |     // await page.getByRole("button", {name: "   ORDERS"}).click();
+  289 |     await page.locator('button[routerlink*="myorders"]').click();
+  290 |
+  291 |     // ************ ORDER Page ************ \\
+  292 |
+  293 |     await page.locator("tbody").waitFor();
+  294 |
+  295 |     await page.locator("h1").isVisible();
+  296 |     const orderPageTitle = await page.locator("h1").textContent();
+  297 |     expect(orderPageTitle).toBe("Your Orders");
+  298 |
+  299 |     await page.locator(".row button").first().isVisible();
+  300 |     const goBackToShopBtn = await page
+  301 |       .locator(".row button")
+  302 |       .first()
+  303 |       .textContent();
+  304 |     expect(goBackToShopBtn).toBe("Go Back to Shop");
+  305 |
+  306 |     const rows = await page.locator("tbody tr");
+  307 |     const rowsCount = await rows.count();
+  308 |     // console.log(">>> rowsCount: ", rowsCount);
+  309 |
+  310 |     let rowOrderId = "";
+  311 |
+  312 |     for (let i = 0; i < rowsCount; i++) {
+  313 |       rowOrderId = await rows.nth(i).locator("th").textContent();
+  314 |       // console.log(rowOrderId)
+  315 |       // console.log(orderNumber)
+  316 |       if (orderNumber.includes(rowOrderId)) {
+  317 |         console.log("Orders are equals");
+  318 |         await rows.nth(i).locator("button.btn-primary").click();
+  319 |         break;
+  320 |       }
+  321 |     }
+  322 |
+  323 |     // ************** ORDER SUMMARY PAGE ************** \\
+```

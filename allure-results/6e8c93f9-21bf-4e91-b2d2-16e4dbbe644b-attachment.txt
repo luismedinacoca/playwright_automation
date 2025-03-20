@@ -1,0 +1,63 @@
+Error al crear la orden: locator.isVisible: Error: strict mode violation: locator('tbody .ng-star-inserted') resolved to 7 elements:
+    1) <tr _ngcontent-ksl-c38="" class="ng-star-inserted">…</tr> aka getByRole('row', { name: '67dc1b46c019fb1ad630741a' })
+    2) <tr _ngcontent-ksl-c38="" class="ng-star-inserted">…</tr> aka getByRole('row', { name: '67dc1b46c019fb1ad6307417 ZARA' })
+    3) <tr _ngcontent-ksl-c38="" class="ng-star-inserted">…</tr> aka getByRole('row', { name: '67dc1acbc019fb1ad6307327' })
+    4) <tr _ngcontent-ksl-c38="" class="ng-star-inserted">…</tr> aka getByRole('row', { name: '67dc1acbc019fb1ad6307324 ZARA' })
+    5) <tr _ngcontent-ksl-c38="" class="ng-star-inserted">…</tr> aka getByRole('row', { name: '67dc17d9c019fb1ad6306d49' })
+    6) <tr _ngcontent-ksl-c38="" class="ng-star-inserted">…</tr> aka getByRole('row', { name: '67dc17d9c019fb1ad6306d46 ZARA' })
+    7) <tr _ngcontent-ksl-c38="" class="ng-star-inserted">…</tr> aka getByRole('row', { name: '67dc17bbc019fb1ad6306d01' })
+
+Call log:
+    - checking visibility of locator('tbody .ng-star-inserted')
+
+    at /Users/luisjaviermedinacoca/Desktop/WORKCENTER/[Playwright]/playwright-automation/tests/section10/lecture049.spec.js:140:25 {
+  [Symbol(step)]: {
+    stepId: 'pw:api@28',
+    location: {
+      file: '/Users/luisjaviermedinacoca/Desktop/WORKCENTER/[Playwright]/playwright-automation/tests/section10/lecture049.spec.js',
+      line: 140,
+      column: 25
+    },
+    category: 'pw:api',
+    title: 'locator.isVisible(tbody .ng-star-inserted)',
+    apiName: 'locator.isVisible',
+    params: { selector: 'tbody .ng-star-inserted', strict: true },
+    boxedStack: undefined,
+    steps: [],
+    attachmentIndices: [],
+    info: TestStepInfoImpl {
+      annotations: [],
+      _testInfo: [TestInfoImpl],
+      _stepId: 'pw:api@28'
+    },
+    complete: [Function: complete],
+    endWallTime: 1742478151425,
+    error: {
+      message: "Error: locator.isVisible: Error: strict mode violation: locator('tbody .ng-star-inserted') resolved to 7 elements:\n" +
+        `    1) <tr _ngcontent-ksl-c38="" class="ng-star-inserted">…</tr> aka getByRole('row', { name: '67dc1b46c019fb1ad630741a' })\n` +
+        `    2) <tr _ngcontent-ksl-c38="" class="ng-star-inserted">…</tr> aka getByRole('row', { name: '67dc1b46c019fb1ad6307417 ZARA' })\n` +
+        `    3) <tr _ngcontent-ksl-c38="" class="ng-star-inserted">…</tr> aka getByRole('row', { name: '67dc1acbc019fb1ad6307327' })\n` +
+        `    4) <tr _ngcontent-ksl-c38="" class="ng-star-inserted">…</tr> aka getByRole('row', { name: '67dc1acbc019fb1ad6307324 ZARA' })\n` +
+        `    5) <tr _ngcontent-ksl-c38="" class="ng-star-inserted">…</tr> aka getByRole('row', { name: '67dc17d9c019fb1ad6306d49' })\n` +
+        `    6) <tr _ngcontent-ksl-c38="" class="ng-star-inserted">…</tr> aka getByRole('row', { name: '67dc17d9c019fb1ad6306d46 ZARA' })\n` +
+        `    7) <tr _ngcontent-ksl-c38="" class="ng-star-inserted">…</tr> aka getByRole('row', { name: '67dc17bbc019fb1ad6306d01' })\n` +
+        '\n' +
+        'Call log:\n' +
+        "\x1B[2m    - checking visibility of locator('tbody .ng-star-inserted')\x1B[22m\n",
+      stack: "Error: locator.isVisible: Error: strict mode violation: locator('tbody .ng-star-inserted') resolved to 7 elements:\n" +
+        `    1) <tr _ngcontent-ksl-c38="" class="ng-star-inserted">…</tr> aka getByRole('row', { name: '67dc1b46c019fb1ad630741a' })\n` +
+        `    2) <tr _ngcontent-ksl-c38="" class="ng-star-inserted">…</tr> aka getByRole('row', { name: '67dc1b46c019fb1ad6307417 ZARA' })\n` +
+        `    3) <tr _ngcontent-ksl-c38="" class="ng-star-inserted">…</tr> aka getByRole('row', { name: '67dc1acbc019fb1ad6307327' })\n` +
+        `    4) <tr _ngcontent-ksl-c38="" class="ng-star-inserted">…</tr> aka getByRole('row', { name: '67dc1acbc019fb1ad6307324 ZARA' })\n` +
+        `    5) <tr _ngcontent-ksl-c38="" class="ng-star-inserted">…</tr> aka getByRole('row', { name: '67dc17d9c019fb1ad6306d49' })\n` +
+        `    6) <tr _ngcontent-ksl-c38="" class="ng-star-inserted">…</tr> aka getByRole('row', { name: '67dc17d9c019fb1ad6306d46 ZARA' })\n` +
+        `    7) <tr _ngcontent-ksl-c38="" class="ng-star-inserted">…</tr> aka getByRole('row', { name: '67dc17bbc019fb1ad6306d01' })\n` +
+        '\n' +
+        'Call log:\n' +
+        "\x1B[2m    - checking visibility of locator('tbody .ng-star-inserted')\x1B[22m\n" +
+        '\n' +
+        '    at /Users/luisjaviermedinacoca/Desktop/WORKCENTER/[Playwright]/playwright-automation/tests/section10/lecture049.spec.js:140:25',
+      cause: undefined
+    }
+  }
+}
