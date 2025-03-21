@@ -1,0 +1,47 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Section 10 - API Testing with Playwright and Build mix of Web & API tests >> Lecture 046 - Playwright request method to make API calls and grab response - Example
+- Location: /Users/luisjaviermedinacoca/Desktop/WORKCENTER/[Playwright]/playwright-automation/tests/section11/lecture053.spec.js:5:3
+
+# Error details
+
+```
+Error: locator.fill: Target page, context or browser has been closed
+Call log:
+  - waiting for locator('#username')
+
+    at /Users/luisjaviermedinacoca/Desktop/WORKCENTER/[Playwright]/playwright-automation/tests/section11/lecture053.spec.js:14:20
+```
+
+# Test source
+
+```ts
+   1 | // import { test, expect, request } from "@playwright/test";
+   2 | const { test, expect, request } = require("@playwright/test");
+   3 |
+   4 | test.describe("Section 10 - API Testing with Playwright and Build mix of Web & API tests", () => {
+   5 |   test("Lecture 046 - Playwright request method to make API calls and grab response - Example", async ({
+   6 |     browser,
+   7 |   }) => {
+   8 |     const context = await browser.newContext();
+   9 |     const page = await context.newPage();
+  10 |     const userName = page.locator("#username");
+  11 |     const signIn = page.locator("#signInBtn");
+  12 |     const cardTitles = page.locator(".card-body a");
+  13 |     await page.goto("https://rahulshettyacademy.com/loginpagePractise/");
+> 14 |     console.log(await page.title());
+     |                    ^ Error: locator.fill: Target page, context or browser has been closed
+  15 |
+  16 |     await userName.fill("rahulshetty");
+  17 |     await page.locator("[type='password']").fill("learning");
+  18 |     await signIn.click();
+  19 |   });
+  20 | });
+  21 |
+```

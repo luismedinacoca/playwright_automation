@@ -1,0 +1,81 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Section 11 - Session Storage & Intercepting network request/response >> Lecture 054 - 
+- Location: /Users/luisjaviermedinacoca/Desktop/WORKCENTER/[Playwright]/playwright-automation/tests/section11/lecture053.spec.js:37:3
+
+# Error details
+
+```
+Error: locator.click: Error: strict mode violation: getByRole('button', { name: 'Cart' }) resolved to 4 elements:
+    1) <button tabindex="0" _ngcontent-luj-c33="" class="btn btn-custom" routerlink="/dashboard/cart">…</button> aka getByRole('button', { name: '   Cart' })
+    2) <button _ngcontent-luj-c34="" class="btn w-10 rounded">…</button> aka getByRole('button', { name: ' Add To Cart' }).first()
+    3) <button _ngcontent-luj-c34="" class="btn w-10 rounded">…</button> aka getByRole('button', { name: ' Add To Cart' }).nth(1)
+    4) <button _ngcontent-luj-c34="" class="btn w-10 rounded">…</button> aka getByRole('button', { name: ' Add To Cart' }).nth(2)
+
+Call log:
+  - waiting for getByRole('button', { name: 'Cart' })
+
+    at /Users/luisjaviermedinacoca/Desktop/WORKCENTER/[Playwright]/playwright-automation/tests/section11/lecture053.spec.js:45:54
+```
+
+# Test source
+
+```ts
+   1 | // import { test, expect, request } from "@playwright/test";
+   2 | const { test, expect, request } = require("@playwright/test");
+   3 |
+   4 | let webContext;
+   5 | let page;
+   6 |
+   7 | test.describe("Section 11 - Session Storage & Intercepting network request/response", () => {
+   8 |   test.beforeAll(async ({ browser }) => {
+   9 |     const context = await browser.newContext();
+  10 |     page = await context.newPage();
+  11 |
+  12 |     await page.goto("https://rahulshettyacademy.com/client/");
+  13 |
+  14 |     await page.locator("#userEmail").fill("suspiros_mza@mailinator.com");
+  15 |     await page.locator("#userPassword").fill("Test!001");
+  16 |     await page.locator("#login").click();
+  17 |
+  18 |     await page.waitForLoadState("networkidle");
+  19 |     await context.storageState({ path: "utils/state.json" });
+  20 |
+  21 |     webContext = await browser.newContext({ storageState: "utils/state.json" });
+  22 |   });
+  23 |
+  24 |   test("Lecture 053 - ", async () => {
+  25 |     const page = await webContext.newPage();
+  26 |     await page.goto("https://rahulshettyacademy.com/client/");
+  27 |
+  28 |     const titles = await page.locator(".card-body b").allTextContents();
+  29 |     await page.waitForLoadState("networkidle");
+  30 |     console.log("Titles: ", titles);
+  31 |
+  32 |     await page.getByRole("button", { name: "ORDERS" }).click();
+  33 |     await page.waitForURL("https://rahulshettyacademy.com/client/myorders"); // Espera a la URL de órdenes
+  34 |     await page.waitForTimeout(3000);
+  35 |   });
+  36 |
+  37 |   test("Lecture 054 - ", async () => {
+  38 |     const page = await webContext.newPage();
+  39 |     await page.goto("https://rahulshettyacademy.com/client/");
+  40 |
+  41 |     const titles = await page.locator(".card-body b").allTextContents();
+  42 |     await page.waitForLoadState("networkidle");
+  43 |     console.log("Titles: ", titles);
+  44 |
+> 45 |     await page.getByRole("button", { name: "Cart" }).click();
+     |                                                      ^ Error: locator.click: Error: strict mode violation: getByRole('button', { name: 'Cart' }) resolved to 4 elements:
+  46 |     await page.waitForURL("https://rahulshettyacademy.com/client/cart"); // Espera a la URL del carrito
+  47 |     await page.waitForTimeout(3000);
+  48 |   });
+  49 | });
+  50 |
+```
