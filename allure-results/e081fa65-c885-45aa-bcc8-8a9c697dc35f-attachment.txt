@@ -1,6 +1,0 @@
-src value in nth(0): /static/media/sl-404.168b1cce.jpg
-src value in nth(1): /static/media/sl-404.168b1cce.jpg
-src value in nth(2): /static/media/sl-404.168b1cce.jpg
-src value in nth(3): /static/media/sl-404.168b1cce.jpg
-src value in nth(4): /static/media/sl-404.168b1cce.jpg
-src value in nth(5): /static/media/sl-404.168b1cce.jpg

@@ -10,6 +10,13 @@ const { test, expect, request } = require("@playwright/test");
 import { faker } from "@faker-js/faker";
 const { DateTime } = require("luxon");
 
+test.use({
+  viewport: {
+    width: 1512,
+    height: 982,
+  },
+});
+
 //Write a Test
 test("Create POST API Request using DYNAMIC request body", async ({
   request,

@@ -1,0 +1,64 @@
+[
+  {
+    "description": "    Feature Login page will work depending on the user credentials.",
+    "elements": [
+      {
+        "description": "",
+        "id": "login;success-login",
+        "keyword": "Scenario",
+        "line": 4,
+        "name": "Success Login",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 5,
+            "name": "A web browser is at the saucelabs login page",
+            "match": {
+              "location": "src/tests/step-definitions/login.ts:40"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 584767791,
+              "error_message": "page.goto: net::ERR_INTERNET_DISCONNECTED at https://www.saucedemo.com/\nCall log:\n\u001b[2m  - navigating to \"https://www.saucedemo.com/\", waiting until \"load\"\u001b[22m\n\n    at LoginPage.navigateToLoginPage (/Users/luisjaviermedinacoca/Desktop/WORKCENTER/[Playwright]/playwright-automation/page-objects/LoginPage.ts:18:21)\n    at World.<anonymous> (/Users/luisjaviermedinacoca/Desktop/WORKCENTER/[Playwright]/playwright-automation/src/tests/step-definitions/login.ts:45:19)"
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 6,
+            "name": "A user enters the username \"standard_user\", the password \"secret_sauce\", and clicks on the login button",
+            "match": {
+              "location": "src/tests/step-definitions/login.ts:48"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 7,
+            "name": "the url will contains the inventory subdirectory.",
+            "match": {
+              "location": "src/tests/step-definitions/login.ts:57"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      }
+    ],
+    "id": "login",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "login",
+    "tags": [],
+    "uri": "src/tests/features/login.feature"
+  }
+]

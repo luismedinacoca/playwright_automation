@@ -1,5 +1,0 @@
-Titles are: Sauce Labs Backpack,Sauce Labs Bike Light,Sauce Labs Bolt T-Shirt,Sauce Labs Fleece Jacket,Sauce Labs Onesie,Test.allTheThings() T-Shirt (Red)
-Array.isArray(titles):  true
-products.count() 6
-Your cart title: Your Cart
-First selected product: Sauce Labs Bolt T-Shirt

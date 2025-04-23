@@ -7,6 +7,13 @@ const tokenRequestBody = require("../token_request_body.json");
 const putRequestBody = require("../put_request_body.json");
 const patchRequestBody = require("../patch_request_body.json");
 
+test.use({
+  viewport: {
+    width: 1512,
+    height: 982,
+  },
+});
+
 test("Create DELETE API request in Playwright", async ({ request }) => {
   /*
    * Use "stringify" function: (bookingAPIrequestBody): Json => string

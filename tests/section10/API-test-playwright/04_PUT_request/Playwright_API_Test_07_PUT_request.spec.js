@@ -2,9 +2,16 @@
 const { test, expect, request } = require("@playwright/test");
 import { stringFormat } from "../../../../utils/commons";
 
+test.use({
+  viewport: {
+    width: 1512,
+    height: 982,
+  },
+});
+
 const bookingAPIrequestBody = require("../post_dynamic_request_body.json");
 const tokenRequestBody = require("../token_request_body.json");
-const putRequestBody = require('../put_request_body.json');
+const putRequestBody = require("../put_request_body.json");
 
 test("Create PUT API request in Playwright", async ({ request }) => {
   /*
@@ -19,7 +26,7 @@ test("Create PUT API request in Playwright", async ({ request }) => {
     "Aguante la Renga"
   );
 
-  console.log("====================== POST request ======================")
+  console.log("====================== POST request ======================");
   //Create POST API Request
   /*
    * JSON.parse function: (dynamicRequestBody): string => Json format
@@ -30,7 +37,7 @@ test("Create PUT API request in Playwright", async ({ request }) => {
       data: JSON.parse(dynamicRequestBody),
     }
   );
-  
+
   //Validate status code
   console.log("post_API_response.ok(): ", post_API_response.ok());
   expect(post_API_response.ok()).toBeTruthy();
@@ -78,7 +85,6 @@ test("Create PUT API request in Playwright", async ({ request }) => {
   console.log(
     "postAPIresponseJson.booking.bookingdates: ",
     postAPIresponseJson.booking.bookingdates
-    
   );
   expect(postAPIresponseJson.booking.bookingdates).toHaveProperty(
     "checkin",
@@ -109,7 +115,7 @@ test("Create PUT API request in Playwright", async ({ request }) => {
   );
 
   console.log(" ");
-  console.log("====================== GET request ======================")
+  console.log("====================== GET request ======================");
   console.log(" ");
   const getAPIresponse = await request.get(
     `https://restful-booker.herokuapp.com/booking/${b_Id}`,
@@ -134,9 +140,9 @@ test("Create PUT API request in Playwright", async ({ request }) => {
   console.log("expect(getAPIresponse.status()).toBe(200)");
   console.log("getAPIresponse.status(): ", getAPIresponse.status());
 
-  console.log(' ')
-  console.log("====================== Query request ======================")
-  console.log(' ')
+  console.log(" ");
+  console.log("====================== Query request ======================");
+  console.log(" ");
 
   const getAPIresponse02 = await request.get(
     `https://restful-booker.herokuapp.com/booking/`,
@@ -149,19 +155,20 @@ test("Create PUT API request in Playwright", async ({ request }) => {
 
   console.log("🤬 getAPIresponse02.json():", await getAPIresponse02.json());
 
-  
-  
-  console.log('')
-  console.log("====================== PUT request ======================")
-  console.log('')
+  console.log("");
+  console.log("====================== PUT request ======================");
+  console.log("");
   //Generate the Token: POST
   /*
    * "username": "admin",
-   * "password": "password123", 
+   * "password": "password123",
    */
-  const tokenResponse = await request.post(`https://restful-booker.herokuapp.com/auth`, {
-    data: tokenRequestBody
-  }) 
+  const tokenResponse = await request.post(
+    `https://restful-booker.herokuapp.com/auth`,
+    {
+      data: tokenRequestBody,
+    }
+  );
 
   //console.log("tokenResponse: ", tokenResponse)
   const tokenResponseJson = await tokenResponse.json();
@@ -169,30 +176,33 @@ test("Create PUT API request in Playwright", async ({ request }) => {
   const tokenNum = tokenResponseJson.token;
   console.log("👍🏾 tokenResponse.json().token: ", tokenNum);
 
-  // PUT API request 
-  const putResponse = await request.put(`https://restful-booker.herokuapp.com/booking/${b_Id}`, {
-    headers:{
-      "Content-Type":"application/json",
-      "Cookie":`token=${tokenNum}`
-    },
-    data:putRequestBody
-  })
+  // PUT API request
+  const putResponse = await request.put(
+    `https://restful-booker.herokuapp.com/booking/${b_Id}`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: `token=${tokenNum}`,
+      },
+      data: putRequestBody,
+    }
+  );
 
   const putResponseJson = await putResponse.json();
   console.log("await putResponse.json(): ", putResponseJson);
-  console.log('')
-  
+  console.log("");
+
   //validate putResponse is ok:
   console.log("putResponse.ok(): ", putResponse.ok());
   expect(putResponse.ok()).toBeTruthy();
-  console.log("expect(putResponse.ok()).toBeTruthy()")
-  console.log('')
-  
+  console.log("expect(putResponse.ok()).toBeTruthy()");
+  console.log("");
+
   //validate status code
   console.log("putResponse.status(): ", putResponse.status());
   expect(putResponse.status()).toBe(200);
   console.log("expect(putResponse.status()).toBe(200)");
-  console.log('')
+  console.log("");
 
   const getAPIresponse03 = await request.get(
     `https://restful-booker.herokuapp.com/booking/`,

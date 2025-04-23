@@ -1,8 +1,0 @@
-*********
-Incorrect username/password.
-*********
-iphone X
-Samsung Note 8
-Nokia Edge
-All Titles: iphone X,Samsung Note 8,Nokia Edge,Blackberry
-[ 'iphone X', 'Samsung Note 8', 'Nokia Edge', 'Blackberry' ]

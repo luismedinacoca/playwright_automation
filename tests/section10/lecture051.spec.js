@@ -2,6 +2,13 @@ const { test, expect, request } = require("@playwright/test");
 import { APIutils } from "../section10/utils/APIutils.js";
 import { orderPayload, loginPayload } from "../section10/data/payloads.js";
 
+test.use({
+  viewport: {
+    width: 1512,
+    height: 982,
+  },
+});
+
 test.describe("API Tests", () => {
   let apiUtils;
 

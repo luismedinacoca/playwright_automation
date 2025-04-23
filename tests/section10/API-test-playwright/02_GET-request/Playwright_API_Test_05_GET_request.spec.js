@@ -2,6 +2,13 @@
 const { test, expect, request } = require("@playwright/test");
 import { stringFormat } from "../../../../utils/commons";
 
+test.use({
+  viewport: {
+    width: 1512,
+    height: 982,
+  },
+});
+
 const bookingAPIrequestBody = require("../post_dynamic_request_body.json");
 
 test("Create GET API Request using DYNAMIC JSON file", async ({ request }) => {

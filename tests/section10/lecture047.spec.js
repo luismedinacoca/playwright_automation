@@ -1,6 +1,13 @@
 // import { test, expect, request } from "@playwright/test";
 const { test, expect, request } = require("@playwright/test");
 
+test.use({
+  viewport: {
+    width: 1512,
+    height: 982,
+  },
+});
+
 test.describe("Section 10 - API Testing with Playwright and Build mix of Web & API tests", () => {
   const loginPayload = {
     userEmail: "suspiros_mza@mailinator.com",
