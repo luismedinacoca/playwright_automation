@@ -12,20 +12,26 @@ const { defineConfig, devices } = require("@playwright/test");
  */
 module.exports = defineConfig({
   testDir: "./tests",
+  retries: 1,
+  workers: 4,
   timeout: 30 * 1000,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [["html"], ["allure-playwright"]],
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    /* Base URL to use in actions like `await page.goto('/')`. */
     // baseURL: 'http://127.0.0.1:3000',
-
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    // trace: 'on-first-retry',
-    video: "on",
-    screenshot: "on",
+    video: "retain-on-failure", //on, off, retain-on-failure"
+    screenshot: "only-on-failure", // on, off, only-on-failure
     trace: "on",
-    headless: true,
+    ignoreHttpError: true, // SSL certification error
+    permissions: ["geolocation"],
+    headless: false,
+    launchOptions: {
+      //args: ["--start-maximized"],
+      logger: {
+        isEnabled: (name, severity) => true,
+        log: (name, serverity, message, args) =>
+          console.log(name, serverity, message),
+      },
+    },
   },
   expect: {
     timeout: 5_000,
@@ -40,15 +46,23 @@ module.exports = defineConfig({
     //   },
     // },
 
-    {
-      name: "Microsoft Edge",
-      use: { ...devices["Desktop Edge"], channel: "msedge" },
-    },
-
     // {
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'] },
+    //   name: "Microsoft Edge",
+    //   use: {
+    //     ...devices["Desktop Edge"],
+    //     channel: "msedge",
+    //     viewport: { width: 1512, height: 972 },
+    //   },
     // },
+
+    {
+      name: "firefox",
+      use: {
+        // ...devices["iPhone 11"],
+        ...devices["Desktop Firefox"],
+        viewport: { width: 1512, height: 972 },
+      },
+    },
 
     // {
     //   name: 'webkit',

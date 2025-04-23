@@ -1,55 +1,5 @@
 > # [Repo link](https://github.com/luismedinacoca/playwright_automation/blob/master/README.md)
 
-# Section 01 - Introduction to Playwright Automation & Course expectations
-
-1. Appendix - Learn JavaScript Fundamentals from Scratch for Automation
-2. How this Course is designed? Topics Breakup
-3. HInstall Node.js & Visual Studio for setting up Playwright Environment
-
-# Section 02 - 3 hours of Javascript Fundamentals including coding exercises
-
-# Section 03 - Getting started with Playwright Automation Core concepts
-
-# Section 04 - Playwright Basic methods for web automation testing with examples
-
-# Section 05 - Handling UI Components(Dropdowns ,Radio Buttons, Childwindows) with Playwright
-
-# Section 06 - Learn Playwright inspectors, Trace Viewers & Codegen tools with Demo examples
-
-# Section 07 - End to End Web Automation practice exercise with Playwright
-
-# Section 08 - Playwright Unique GetBy Locators for Smart Testing & Test Runner usage
-
-# Section 09 - Handling Web dialogs, Frames & Event listeners with Playwright
-
-# Section 10 - API Testing with Playwright and Build mix of Web & API tests
-
-# Section 11 - Session storage & Intercepting Network request/responses with Playwright
-
-# Section 12 - Perform Visual Testing with Playwright Algorithms
-
-# Section 13 - Build Excel Utils and drive uploads downloads using Playwright
-
-# Section 14 - Page Object Patterns & Data driven Parameterization for Playwright Tests
-
-# Section 15 - Project Configurations, & Config options for robust Framework design
-
-# Section 16 - Test Retries , Serial & Parallel execution & Tagging Tests in Playwright
-
-# Section 17 - HTMl & Allure Reporting & CI/CD Jenkins Integration
-
-# Section 18 - Understand TypeScript Basics and Refactor Playwright Framework to TypeScript
-
-# Section 19 - Playwright Cucumber Framework Integration with its features
-
-# Section 20 - E2E Playwright Devops Solution using Azure Cloud Parallel hosting & CI/CD
-
-# Section 21 - Course Code download
-
-# Section 22 - Bonus Lecture
-
-# Section 23 - Appendix - Learn JavaScript Fundamentals from Scratch for Automation
-
 # Lecture 006 - Create npm Project and install Playwright dependencies
 
 ## 1. create a Project folder
@@ -1397,15 +1347,1036 @@ test("Parsing API token to browser local storage", async ({ page }) => {
 
 # Lecture 050 - Important Prerequisite before going through next 2 videos
 
-# Lecture 051 - Refactor API calls from utils folder and isolate from Web test logic
+# Lecture 051 - Refactor API calls from utils folder and isolate from Web test logic & Lecture 052 - Part 2 - Refactor API calls from utils folder and isolate from Web test logic
 
-# Lecture 052 - Part 2 - Refactor API calls from utils folder and isolate from Web test logic
+Follow the structure:
+
+```javascript
+section10
+|
+├-- `data`
+|    └-- payload.js
+├-- `utils`
+|    └-- APIutils.js
+└-- `lecture051.spec.js`
+```
+
+## Create a `payload.js` file inside a data folde
+
+```js
+export const loginPayload = {
+  userEmail: "suspiros_mza@mailinator.com",
+  userPassword: "Test!001",
+};
+
+export const orderPayload = {
+  orders: [
+    {
+      country: "Argentina",
+      productOrderedId: "67a8dde5c0d3e6622a297cc8",
+    },
+    {
+      country: "United Kingdom",
+      productOrderedId: "67a8df1ac0d3e6622a297ccb",
+    },
+    {
+      country: "Egypt",
+      productOrderedId: "67a8df56c0d3e6622a297ccd",
+    },
+  ],
+};
+```
+
+## Create a `APIutils.js` file inside a `utils` folder
+
+1. create `utils` folder
+
+2. Inside `utils` folder, create a `APIutils.js` file as follow:
+
+```js
+const { request, expect } = require("@playwright/test");
+
+class APIutils {
+  constructor() {
+    this.token = null; // Almacenar el token aquí
+  }
+  //...
+}
+export { APIutils };
+```
+
+3. Inside `APIutils.js` file, we need to create 3 methods:
+
+- getToken();
+- injectTokenIntoLocalStorage();
+- createOrder();
+
+4. Inside `getToken()` method:
+
+```js
+async getToken(request, loginPayload) {
+  try {
+    const loginResponse = await request.post(
+      "https://rahulshettyacademy.com/api/ecom/auth/login",
+      {
+        data: loginPayload,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    expect(loginResponse.ok()).toBeTruthy();
+    expect(loginResponse.status()).toBe(200);
+
+    const loginResponseJson = await loginResponse.json();
+    expect(loginResponseJson.token).toBeDefined();
+
+    this.token = await loginResponseJson.token;
+    // Almacenar el token en la clase
+    process.env.authToken = this.token;
+
+    return this.token;
+
+  } catch (error) {
+    console.error("Error getting token:", error);
+    throw error;
+  }
+}
+```
+
+5. Inside `injectTokenIntoLocalStorage()` method:
+
+```js
+async injectTokenIntoLocalStorage(page) {
+  if (this.token) {
+    await page.addInitScript((value) => {
+      window.localStorage.setItem("token", value);
+    }, this.token);
+  } else {
+    console.warn("Token is not available. Call getToken() first.");
+  }
+}
+```
+
+6. Inside `createOrder()` method:
+
+```js
+async createOrder(request, orderPayload) {
+  try {
+    if (!this.token) {
+      throw new Error("Token is not available. Call getToken() first.");
+    }
+
+    const orderResponse = await request.post(
+      "https://rahulshettyacademy.com/api/ecom/order/create-order",
+      {
+        data: orderPayload,
+        headers: {
+          Authorization: this.token, // Usar el token almacenado
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const orderResponseJson = await orderResponse.json();
+    expect(orderResponseJson.orders).toBeDefined();
+
+    const newOrders = orderResponseJson.orders;
+    const orderId = orderResponseJson.orders[0];
+
+    return orderId;
+
+  } catch (error) {
+    console.error("Error creating order:", error);
+    throw error;
+  }
+}
+```
+
+7. Finally the test is created:
+
+```js
+const { test, expect, request } = require("@playwright/test");
+import { APIutils } from "./APIutils.js";
+import { orderPayload, loginPayload } from "./data/payloads.js";
+
+test.describe("API Tests", () => {
+  let apiUtils;
+
+  test.beforeAll(async ({ request }) => {
+    apiUtils = new APIutils();
+    await apiUtils.getToken(request, loginPayload); // Obtener el token una vez
+  });
+
+  test.beforeEach(async ({ page }) => {
+    await apiUtils.injectTokenIntoLocalStorage(page); // Inyectar el token antes de cada test
+  });
+
+  test("Log Out from ecommerce Test", async ({ request, page }) => {
+    await page.goto("https://rahulshettyacademy.com/client/");
+
+    await page.getByRole("button", { name: "ORDERS" }).click();
+    await page.waitForTimeout(2000);
+
+    await page.getByRole("button", { name: "Sign Out" }).click();
+    await page.waitForTimeout(1000);
+  });
+
+  test("Create Order Test", async ({ request, page }) => {
+    await page.goto("https://rahulshettyacademy.com/client/");
+
+    const orderId = await apiUtils.createOrder(request, orderPayload);
+    expect(orderId).toBeDefined();
+
+    await page.getByRole("button", { name: "ORDERS" }).click();
+    await page.waitForTimeout(2500);
+
+    await page.getByRole("button", { name: "Sign Out" }).click();
+    await page.waitForTimeout(1500);
+  });
+});
+```
+
+# Lecture 055 - How to save session storage using Playwright and inject into new Browser context
+
+Adding the following code:
+
+```js
+let webContext;
+let page;
+
+test.beforeAll(async ({ browser }) => {
+  context = await browser.newContext();
+  page = await context.newPage();
+
+  await page.goto(`${URL}`);
+
+  await page.locator("#userEmail").fill(`${email_or_username}`);
+  await page.locator("#userPassword").fill(`${password}`);
+  await page.locator("#login").click();
+
+  // create a physical file where you will put/paste all cookies:
+  await context.storageState({ path: "utils/state.json" });
+
+  //copy all cookies in an external file place in "utils/state,json"
+  webContext = await browser.newContext({ storageState: "utils/state.json" });
+});
+```
+
+in test.beforeEach section code:
+
+```js
+test.beforeEach(async () => {
+  page = await webContext.newPage();
+  await page.goto(`${URL}`);
+});
+```
+
+Then continue with each test case:
+
+```js
+test("Test 001 - do something", async () => {
+  const titles = await page.locator("title-locator").allTextContents();
+  //...
+});
+
+test("Test 002 - do something else - ", async () => {
+  await page.getByRole("button", { name: "Cart" }).click();
+  //...
+});
+```
+
+Remember:
+
+> the last test case must have the sign-out action only!
+
+# Lecture 056 - How to debug the API steps in script using Visual code debugging
+
+1. For debugging UI, use:
+
+```js
+$ npx playwright test [test_case_relative_path] --headed --debug
+```
+
+i.e.:
+
+> npx playwright test tests/section10/lecture051.spec.js --headed
+
+## In case you need to debug for API test:
+
+1. Add a `script` for a specific test case inside `package.json` file:
+
+```js
+"scripts": {
+  "test": "npx playwright test [test_case_relative_path] --headed"
+},
+```
+
+i.e.
+
+```js
+"scripts": {
+  "test": "npx playwright test tests/section10/lecture051.spec.js --headed"
+},
+```
+
+2. Add a debug point anywhere API code.
+
+3. with `shift + ctrl + P` or `shift + cmd + P` you got access to `Debug: Debug npm Script`, then hit enter.
+   <img src="./Images/section11/section11-debug-npm-script.png">
+
+4. Becareful with the timeout, so increase its timeout to `100*1000` in `playwright.config.js` file:
+
+```js
+module.exports = defineConfig({
+  testDir: "./tests",
+  timeout: 100 * 1000,
+  use: {
+    video: "on",
+    screenshot: "on",
+    trace: "on",
+    headless: true,
+  },
+  expect: {
+    timeout: 5_000,
+  },
+});
+```
+
+# Lecture 057 -
+
+[Trace for trace.zip file](https://trace.playwright.dev/)
+Upload the `trace.zip` inside `test-result` folder.
+
+```js
+$ npx allure serve allure-results
+```
+
+# Lecture 068 -
+
+```javascript
+//Workbook Methods
+const workbook = new Excel.Workbook();
+
+new Excel.Workbook(); //Creates a new workbook
+workbook.xlsx.readFile(path); // Reads an Excel file from disk
+workbook.xlsx.writeFile(path); // Writes workbook to disk as Excel file
+workbook.xlsx.load(buffer); // Loads workbook from buffer
+workbook.csv.readFile(path); // Reads a CSV file
+workbook.csv.writeFile(path); // Writes a CSV file
+workbook.addWorksheet(name); // Adds a new worksheet with specified name
+workbook.getWorksheet(name / id); // Gets a worksheet by name or id
+workbook.removeWorksheet(name / id); // Removes a worksheet
+
+//Worksheet Methods
+
+const worksheet = workbook.getWorksheet("Sheet1");
+
+worksheet.getCell(address); // Gets cell by address (e.g., 'A1')
+worksheet.getRow(rowNumber); // Gets a row by number
+worksheet.getColumn(columnKey); // Gets a column by key (number or letter)
+worksheet.eachRow(callback); // Iterates through all rows
+worksheet.addRow(data); // Adds a new row with data
+worksheet.insertRow(rowIndex, data); // Inserts a row at specified index
+worksheet.mergeCells(range); // Merges cells in specified range
+worksheet.name; // Gets or sets worksheet name
+worksheet.columns; // Sets column definitions/properties
+worksheet.getColumnKey(column); // Gets column letter from index
+
+//Cell Methods
+
+cell.value; // Gets or sets cell value
+cell.formula; // Gets or sets cell formula
+cell.type; // Gets or sets cell type
+cell.style; // Access to cell styling properties
+cell.address; // Gets the cell address (e.g., 'A1')
+cell.numFmt; // Gets or sets number format
+
+//Row Methods
+
+row.getCell(columnKey); // Gets cell in specified column
+row.values; // Gets or sets values for the entire row
+row.height; // Gets or sets row height
+row.hidden; // Gets or sets row visibility
+row.commit(); // Commits row changes
+
+//Column Methods
+
+column.width; // Gets or sets column width
+column.hidden; // Gets or sets column visibility
+column.key; // Gets or sets column key
+column.letter; // Gets column letter
+column.eachCell(callback); // Iterates through cells in column
+```
 
 # Lecture 0 -
 
-# Lecture 0 -
+# Lecture 0 - Page Object Model:
 
-# Lecture 0 -
+## 1st POM version - Estructura Básica con Selectores Directos:
+
+```js
+class LoginPage {
+  constructor(page) {
+    this.page = page;
+    this.usernameInput = "#username"; // Selector CSS
+    this.passwordInput = 'input[name="password"]'; // Otro selector CSS
+    this.loginButton = '//button[text()="Login"]'; // Selector XPath (ejemplo)
+  }
+
+  async enterUsername(username) {
+    await this.page.fill(this.usernameInput, username);
+  }
+
+  async enterPassword(password) {
+    await this.page.fill(this.passwordInput, password);
+  }
+
+  async clickLoginButton() {
+    await this.page.click(this.loginButton);
+  }
+
+  async login(username, password) {
+    await this.enterUsername(username);
+    await this.enterPassword(password);
+    await this.clickLoginButton();
+  }
+}
+
+module.exports = LoginPage;
+```
+
+### Ventajas:
+
+- Sencilla de entender e implementar.
+- Funciona bien para páginas simples.
+
+### Desventajas:
+
+- Si los selectores cambian en la página, debes actualizar el POM en varios lugares.
+- Puede volverse menos manejable para páginas complejas.
+
+## 2nd POM version - Agrupando Selectores en un Objeto:
+
+```js
+class LoginPage {
+  constructor(page) {
+    this.page = page;
+    this.selectors = {
+      usernameInput: "#username",
+      passwordInput: 'input[name="password"]',
+      loginButton: '//button[text()="Login"]',
+    };
+  }
+
+  async enterUsername(username) {
+    await this.page.fill(this.selectors.usernameInput, username);
+  }
+
+  async enterPassword(password) {
+    await this.page.fill(this.selectors.passwordInput, password);
+  }
+
+  async clickLoginButton() {
+    await this.page.click(this.selectors.loginButton);
+  }
+
+  async login(username, password) {
+    await this.enterUsername(username);
+    await this.enterPassword(password);
+    await this.clickLoginButton();
+  }
+}
+
+module.exports = LoginPage;
+```
+
+### Ventajas:
+
+- Centraliza los selectores, facilitando la actualización si cambian.
+- Mejora la legibilidad al separar la lógica de interacción de los selectores.
+
+### Desventajas:
+
+- Aún depende directamente de los selectores.
+
+## 3rd POM version - Utilizando Funciones para Obtener Elementos
+
+En lugar de almacenar directamente los selectores, puedes crear funciones que devuelvan los elementos de la página. Esto puede ser útil si la forma de localizar un elemento se vuelve más compleja.
+
+```js
+class LoginPage {
+  constructor(page) {
+    this.page = page;
+  }
+
+  getUsernameInput() {
+    return this.page.locator("#username");
+  }
+
+  getPasswordInput() {
+    return this.page.locator('input[name="password"]');
+  }
+
+  getLoginButton() {
+    return this.page.locator('//button[text()="Login"]');
+  }
+
+  async enterUsername(username) {
+    await this.getUsernameInput().fill(username);
+  }
+
+  async enterPassword(password) {
+    await this.getPasswordInput().fill(password);
+  }
+
+  async clickLoginButton() {
+    await this.getLoginButton().click();
+  }
+
+  async login(username, password) {
+    await this.enterUsername(username);
+    await this.enterPassword(password);
+    await this.clickLoginButton();
+  }
+}
+
+module.exports = LoginPage;
+```
+
+### Ventajas:
+
+- Ofrece mayor flexibilidad si la lógica para localizar elementos se vuelve compleja.
+- Puede mejorar la abstracción.
+
+### Desventajas:
+
+- Ligeramente más verboso
+
+## 4th POM version - Combinando Selectores Agrupados con Funciones
+
+Puedes combinar las ventajas de agrupar selectores con la flexibilidad de las funciones para obtener elementos.
+
+```js
+class LoginPage {
+  constructor(page) {
+    this.page = page;
+    this.selectors = {
+      usernameInput: "#username",
+      passwordInput: 'input[name="password"]',
+      loginButton: '//button[text()="Login"]',
+    };
+  }
+
+  // getting for each locator:
+  getUsernameInput() {
+    return this.page.locator(this.selectors.usernameInput);
+  }
+
+  getPasswordInput() {
+    return this.page.locator(this.selectors.passwordInput);
+  }
+
+  getLoginButton() {
+    return this.page.locator(this.selectors.loginButton);
+  }
+
+  // method in order to use each or more locators:
+  async enterUsername(username) {
+    await this.getUsernameInput().fill(username);
+  }
+
+  async enterPassword(password) {
+    await this.getPasswordInput().fill(password);
+  }
+
+  async clickLoginButton() {
+    await this.getLoginButton().click();
+  }
+
+  async login(username, password) {
+    await this.enterUsername(username);
+    await this.enterPassword(password);
+    await this.clickLoginButton();
+  }
+}
+
+module.exports = LoginPage;
+```
+
+### Ventajas:
+
+- Combina la claridad de los selectores agrupados con la flexibilidad de las funciones.
+- Buena estructura para proyectos medianos y grandes.
+
+# Lecture 083 - various options in use property & setting up Project configurations
+
+- create a new `playwright.config.js` file and renamed as `playwright.config1.js`.
+
+- execute running the following command:
+
+```js
+  npx playwright test path_test_case --config playwright.config1.js
+```
+
+In order to change the viewport configuration:
+
+```js
+projects: [
+  {
+    name: "Microsoft Edge",
+    use: {
+        ...devices["Desktop Edge"],
+      channel: "msedge",
+      viewport: { width: 1512, height: 972 },
+    },
+  },
+  {
+    name: "Chromium",
+    use: {
+        ...devices["Desktop Chrome"],
+      channel: "msedge",
+      viewport: { width: 1920, height: 974 },
+    },
+  },
+  {
+    name: 'firefox',
+    use: { ...devices['Desktop Firefox'] },
+  },
+  ...
+]
+```
+
+# lecture 088: How to run tests parallely from the same file by extending test option behaviour
+
+1. Running `parallel` test from same file: adding `test.describe.configure({ mode: "parallel" });`
+
+```js
+test.describe.configure({ mode: "parallel" });
+test("test 001", async ({page}) {
+  ...
+});
+
+test("test 002", async ({page}) {
+  ...
+});
+```
+
+`test 001` and `test 002` will be executed in parallel.
+
+2. Running in `serial` mode test from same file: adding `test.describe.configure({ mode: "serial" });`
+
+```js
+test.describe.configure({ mode: "serial" });
+test("test 001", async ({page}) {
+  ...
+});
+
+test("test 002", async ({page}) {
+  ...
+});
+
+test("test 003", async ({page}) {
+  ...
+});
+```
+
+`test 001` pass however `test 002` fails so `test 003` won't execute.
+
+# Lecture 089 - Reason for test failures - Race condition - Fix them
+
+```js
+test.skip();
+```
+
+# Lecture 90: How to tag tests and control the execution from the command line parameters
+
+1. Tags With Typescript/javascript:
+
+```js
+import { test } from "@playwright/test";
+test("Mi test importante @regression @fast", async ({ page }) => {
+  // ... la lógica de tu test
+});
+test("Otro test con varias etiquetas @e2e @auth @slow", async ({ page }) => {
+  // ... la lógica de otro test
+});
+test("Este test solo tiene una etiqueta @smoke", async ({ page }) => {
+  // ...
+});
+```
+
+2. De forma más estructurada, podrías usar la propiedad tag dentro del objeto de configuración del test:
+
+```js
+import { test } from "@playwright/test";
+test(
+  "Mi test importante",
+  async ({ page }) => {
+    // ... la lógica de tu test
+  },
+  { tag: ["@regression", "@fast"] }
+);
+
+test(
+  "Otro test con varias etiquetas",
+  async ({ page }) => {
+    // ... la lógica de otro test
+  },
+  { tag: ["@e2e", "@auth", "@slow"] }
+);
+
+test(
+  "Este test solo tiene una etiqueta",
+  async ({ page }) => {
+    // ...
+  },
+  { tag: "@smoke" }
+);
+```
+
+3. ejecutar los tests desde la línea de comandos, puedes usar estas etiquetas para incluir o excluir grupos específicos de tests
+
+```bash
+npx playwright test --grep @regression
+```
+
+```bash
+playwright test @regression
+```
+
+Para ejecutar los tests etiquetados con @regression y @fast:
+
+```bash
+playwright test @regression @fast
+```
+
+Para ejecutar los tests etiquetados con @e2e o @smoke:
+
+```bash
+playwright test @e2e or @smoke
+```
+
+Para excluir los tests etiquetados con @slow
+
+```bash
+playwright test --exclude @slow
+```
+
+# Lecture 091 - How to generate HTML & Allure reporting for Playwright Framework tests
+
+1. Install allure dependency/library:
+
+```bash
+npm i -D @playwright/test allure-playwright
+```
+
+2. run test cases.
+
+```bash
+npx playwright test --reporter=line,allure-playwright
+```
+
+```javascript
+playwright-main-project
+|
+├-- .github
+|    └-- ...
+├-- `allure-results`
+|    └-- ...
+└-- tests
+|    └-- ...
+```
+
+3. Run
+
+```bash
+allure generate ./allure-results --clean
+```
+
+4. Execute:
+
+```bash
+allure open ./allure-report
+```
+
+# Lecture 92: How to create custom scripts to trigger the tests from package.json file
+
+Open `package.json` file:
+
+```json
+{
+  "scripts": {
+    "regression": "npx playwright test",
+    "webtests": "npx playwright test --grep @web",
+    "apitest": "npx playwright test --grep @api",
+    "firefox-run": "npx playwright test --grep @inProgress --project=firefox"
+  }
+}
+```
+
+running from console:
+
+```bash
+npm run regression
+```
+
+```bash
+npm run webtests
+```
+
+```bash
+npm run apitest
+```
+
+```bash
+npm run firefox-run
+```
+
+# Lecture 097: Deep dive into TypeScript type syntaxes and their usage - 1
+
+1. Run the following command:
+
+```bash
+npm install --save-dev typescript
+```
+
+2. Running any javascript file from terminal:
+
+```bash
+node any_file_name.js
+```
+
+3. Running or executing any Typescript file:
+
+```bash
+tsc any_file_name.ts
+```
+
+# Cucumber - Playwright:
+
+[Playwright and Cucumber: EASY SETUP](https://www.youtube.com/watch?v=Dt28z7OXOSA&list=PLYDwWPRvXB89caN5PHWDLrXJuyugu5Mg_&index=16)
+
+## 1. Installation Steps
+
+```js
+// Create new project
+$ mkdir playwright-cucumber-ts
+$ cd playwright-cucumber-ts
+$ npm init -y
+
+//Install required packages
+$ npm install --save-dev @playwright/test @cucumber/cucumber cucumber ts-node typescript
+$ npm install --save-dev @types/node
+
+//Initialize Playwright configuration
+$ npx playwright install
+```
+
+## 2. Project Structure
+
+```
+playwright-cucumber-ts/
+├── features/
+│   └── login.feature
+├── step-definitions/
+│   └── login.steps.ts
+├── pages/
+│   └── login.page.ts
+├── support/
+│   └── hooks.ts
+├── config/
+│   └── cucumber.js
+├── tsconfig.json
+├── playwright.config.ts
+└── package.json
+```
+another option:
+
+```
+playwright-cucumber-typescript/
+├── node_modules/
+├── src/
+│   ├── features/
+│   │   └── login.feature
+│   ├── support/
+│   │   └── hooks.ts
+│   ├── page-objects/
+│   │   └── LoginPage.ts
+│   └── step-definitions/
+│       └── login.steps.ts
+├── package.json
+├── package-lock.json
+├── tsconfig.json
+└── dist/   (will be created after TypeScript compilation)
+```
+
+## 3. Configuration Files
+
+### tsconfig.json
+
+```js
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "outDir": "./dist",
+    "rootDir": "./",
+    "moduleResolution": "node"
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules"]
+}
+```
+
+### config/cucumber.js
+
+```js
+const { setDefaultTimeout } = require("@cucumber/cucumber");
+const { chromium } = require("@playwright/test");
+
+setDefaultTimeout(60 * 1000);
+
+exports.config = {
+  default: {
+    paths: ["../features/**/*.feature"],
+    require: ["../step-definitions/**/*.steps.ts"],
+    requireModule: ["ts-node/register"],
+    format: ["pretty"],
+  },
+};
+```
+
+### playwright.config.ts
+
+```js
+import { PlaywrightTestConfig } from "@playwright/test";
+
+const config: PlaywrightTestConfig = {
+  use: {
+    headless: false,
+    viewport: { width: 1280, height: 720 },
+    actionTimeout: 5000,
+  },
+  projects: [
+    {
+      name: "chromium",
+      use: { browserName: "chromium" },
+    },
+  ],
+};
+
+export default config;
+```
+
+## 4. Feature File (features/login.feature)
+
+```js
+Feature: Login
+  Scenario: Success Login
+    Given A web browser is at the saucelabs login page
+    When A user enters the username "standard_user", the password "secret_sauce", and clicks on the login button
+    Then the url will contains the inventory subdirectory
+```
+
+## 5. Step Definitions (step-definitions/login.steps.ts)
+
+```js
+import { Given, When, Then } from "@cucumber/cucumber";
+import { LoginPage } from "../pages/login.page";
+import { chromium, Page } from "@playwright/test";
+
+let page: Page;
+let loginPage: LoginPage;
+
+Given("A web browser is at the saucelabs login page", async () => {
+  page = await chromium.launch().then((browser) => browser.newPage());
+  loginPage = new LoginPage(page);
+  await loginPage.goto();
+});
+
+When(
+  "A user enters the username {string}, the password {string}, and clicks on the login button",
+  async (username: string, password: string) => {
+    await loginPage.login(username, password);
+  }
+);
+
+Then("the url will contains the inventory subdirectory", async () => {
+  const url = await loginPage.getURL();
+  expect(url).toContain("/inventory.html");
+});
+```
+
+## 6. Hooks (support/hooks.ts)
+
+```js
+import { After, Before } from "@cucumber/cucumber";
+import { chromium, Page, Browser } from "@playwright/test";
+
+let browser: Browser;
+let page: Page;
+
+Before(async () => {
+  browser = await chromium.launch();
+  page = await browser.newPage();
+});
+
+After(async () => {
+  await page.close();
+  await browser.close();
+});
+```
+
+## 7. Page Object Model (pages/login.page.ts)
+
+```js
+import { Page } from '@playwright/test';
+
+export class LoginPage {
+  readonly page: Page;
+
+  constructor(page: Page) {
+    this.page = page;
+  }
+
+  async goto() {
+    await this.page.goto('https://www.saucedemo.com/');
+  }
+
+  async login(username: string, password: string) {
+    await this.page.fill('#user-name', username);
+    await this.page.fill('#password', password);
+    await this.page.click('#login-button');
+  }
+
+  async getURL() {
+    return this.page.url();
+  }
+}
+```
+
+## 8. Update package.json scripts
+
+```json
+"scripts": {
+  "test": "cucumber-js --config ./config/cucumber.js",
+  "test:headless": "HEADLESS=true cucumber-js --config ./config/cucumber.js"
+}
+```
+
+### This setup includes:
+1. TypeScript configuration
+2. Page Object Model implementation
+3. Cucumber integration with Playwright
+4. Proper directory structure
+5. Hooks for browser management
+6. Configuration files for both Cucumber and Playwright
+
+> Note: You might need to adjust the selectors in the page object if the actual selectors on saucedemo.com are different.
 
 # Markdown code
 

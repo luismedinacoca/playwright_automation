@@ -3,17 +3,24 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "npx playwright test tests/section10/lecture051.spec.js --headed",
+    "cucumber": "npx cucumber-js --config config/cucumber.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@cucumber/cucumber": "^11.2.0",
     "@faker-js/faker": "^9.6.0",
     "@playwright/test": "^1.49.1",
     "@types/node": "^22.10.2",
-    "luxon": "^3.5.0"
+    "exceljs": "^4.4.0",
+    "luxon": "^3.5.0",
+    "ts-node": "^10.9.2"
   },
   "dependencies": {
-    "allure-playwright": "^3.2.0"
+    "allure-playwright": "^3.2.0",
+    "regexp-tree": "^0.1.27"
   }
 }
